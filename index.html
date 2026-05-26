@@ -153,24 +153,10 @@ footer{text-align:center;font-family:'IBM Plex Mono',monospace;font-size:10px;co
     <h1>Crown Jewels Council</h1>
     <p class="hd-sub">Autonomous AI stakeholder debate simulator — asset scoring &amp; certification</p>
   </div>
-  <div style="display:flex;align-items:center;gap:8px;">
-    <div class="key-indicator" id="keyIndicator" onclick="toggleDrawer()" title="Configure API key">
-      <span class="ki-dot"></span><span id="keyLabel">API key</span>
-    </div>
-    <div class="live-badge"><span class="live-dot"></span>AI Powered</div>
-  </div>
+  <div class="live-badge"><span class="live-dot"></span>AI Powered</div>
 </header>
 
-<!-- Hidden API key input — not visible to audience -->
-<input type="password" id="apiKeyInput" style="position:absolute;opacity:0;pointer-events:none;width:1px;height:1px;" />
-
-<!-- Slide-up drawer — triggered by secret key combo or indicator click -->
-<div class="api-drawer" id="apiDrawer">
-  <span class="api-drawer-label">API Key</span>
-  <input type="password" id="apiKeyVisible" placeholder="sk-ant-api..." autocomplete="off" />
-  <button class="api-drawer-save" onclick="saveKey()">Save &amp; Close</button>
-  <button class="api-drawer-close" onclick="closeDrawer()">✕</button>
-</div>
+<!-- API key handled server-side via Netlify function -->
 
 <div class="council-grid" id="councilGrid">
   <div class="p-card" id="card-moderator" style="--pc:#4a1a8b;--pb:var(--purple-l);">
@@ -573,17 +559,9 @@ function parseVerdict(text){
 }
 
 async function callClaude(persona,conversationHistory){
-  const apiKey=getApiKey();
-  if(!apiKey)throw new Error('No API key');
-
-  const resp=await fetch('https://api.anthropic.com/v1/messages',{
+  const resp=await fetch('/.netlify/functions/debate',{
     method:'POST',
-    headers:{
-      'Content-Type':'application/json',
-      'x-api-key':apiKey,
-      'anthropic-version':'2023-06-01',
-      'anthropic-beta':'messages-2023-06-01'
-    },
+    headers:{'Content-Type':'application/json'},
     body:JSON.stringify({
       model:persona.model,
       max_tokens:1024,
@@ -623,13 +601,6 @@ document.getElementById('assetSelect').addEventListener('change',function(){
 });
 
 async function startDebate(){
-  const apiKey=getApiKey();
-  if(!apiKey){
-    setStatus('Please paste your Anthropic API key above to start');
-    document.getElementById('apiKeyInput').focus();
-    return;
-  }
-
   if(isRunning)return;
   isRunning=true;
   clearTimers();
