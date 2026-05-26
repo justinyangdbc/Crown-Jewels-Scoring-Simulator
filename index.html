@@ -8,44 +8,21 @@
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 :root{
-  --bg:#f7f5f0;
-  --bg2:#ffffff;
-  --bg3:#f0ede6;
-  --border:rgba(0,0,0,0.09);
-  --border2:rgba(0,0,0,0.15);
-  --text:#1c1a16;
-  --text2:#5a5650;
-  --text3:#9a958e;
-  --gold:#8b6914;
-  --gold-l:#f5edda;
-  --gold-b:rgba(139,105,20,0.2);
-  --red:#8b1a1a;
-  --red-l:#faeaea;
-  --red-b:rgba(139,26,26,0.2);
-  --blue:#1a3d8b;
-  --blue-l:#eaeefc;
-  --blue-b:rgba(26,61,139,0.2);
-  --green:#1a6b3a;
-  --green-l:#e8f5ee;
-  --green-b:rgba(26,107,58,0.2);
-  --purple:#4a1a8b;
-  --purple-l:#eeebfc;
-  --purple-b:rgba(74,26,139,0.2);
-  --amber:#8b4a0a;
-  --amber-l:#fdf0e0;
-  --amber-b:rgba(139,74,10,0.2);
-  --teal:#0a6b6b;
-  --teal-l:#e0f5f5;
-  --teal-b:rgba(10,107,107,0.2);
+  --bg:#f7f5f0;--bg2:#ffffff;--bg3:#f0ede6;
+  --border:rgba(0,0,0,0.09);--border2:rgba(0,0,0,0.15);
+  --text:#1c1a16;--text2:#5a5650;--text3:#9a958e;
+  --gold:#8b6914;--gold-l:#f5edda;--gold-b:rgba(139,105,20,0.2);
+  --red:#8b1a1a;--red-l:#faeaea;--red-b:rgba(139,26,26,0.2);
+  --blue:#1a3d8b;--blue-l:#eaeefc;--blue-b:rgba(26,61,139,0.2);
+  --green:#1a6b3a;--green-l:#e8f5ee;--green-b:rgba(26,107,58,0.2);
+  --purple:#4a1a8b;--purple-l:#eeebfc;--purple-b:rgba(74,26,139,0.2);
+  --amber:#8b4a0a;--amber-l:#fdf0e0;--amber-b:rgba(139,74,10,0.2);
+  --teal:#0a6b6b;--teal-l:#e0f5f5;--teal-b:rgba(10,107,107,0.2);
 }
 body{background:var(--bg);color:var(--text);font-family:'IBM Plex Sans',sans-serif;font-weight:300;min-height:100vh;}
-
-.paper-bg{position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg width='200' height='200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");pointer-events:none;z-index:0;}
-
+.paper-bg{position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg width='200' height='200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");pointer-events:none;z-index:0;}
 .wrap{position:relative;z-index:1;max-width:1020px;margin:0 auto;padding:2.5rem 1.5rem 5rem;}
-
 header{border-bottom:1px solid var(--border2);padding-bottom:1.75rem;margin-bottom:2rem;display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;}
-.hd-left{}
 .eyebrow{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold);margin-bottom:10px;display:flex;align-items:center;gap:10px;}
 .eyebrow::before{content:'';display:inline-block;width:24px;height:1px;background:var(--gold);}
 h1{font-family:'Libre Baskerville',serif;font-size:30px;font-weight:400;color:var(--text);line-height:1.2;margin-bottom:5px;}
@@ -53,20 +30,6 @@ h1{font-family:'Libre Baskerville',serif;font-size:30px;font-weight:400;color:va
 .live-badge{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:0.08em;padding:5px 12px;border-radius:3px;border:0.5px solid var(--green-b);color:var(--green);background:var(--green-l);display:flex;align-items:center;gap:6px;white-space:nowrap;flex-shrink:0;}
 .live-dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:blink 2s infinite;}
 @keyframes blink{0%,100%{opacity:1;}50%{opacity:0.2;}}
-
-.api-banner{display:none;}
-.api-drawer{position:fixed;bottom:0;left:0;right:0;background:var(--bg2);border-top:0.5px solid var(--border2);padding:10px 20px;display:flex;align-items:center;gap:12px;z-index:200;transform:translateY(100%);transition:transform 0.25s ease;box-shadow:0 -4px 20px rgba(0,0,0,0.08);}
-.api-drawer.open{transform:translateY(0);}
-.api-drawer input{flex:1;max-width:480px;border:0.5px solid var(--border2);border-radius:4px;padding:7px 10px;font-family:'IBM Plex Mono',monospace;font-size:12px;background:var(--bg3);color:var(--text);outline:none;}
-.api-drawer input:focus{border-color:var(--gold);}
-.api-drawer-label{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--text3);white-space:nowrap;}
-.api-drawer-save{background:var(--text);color:#fff;border:none;border-radius:4px;padding:7px 16px;font-family:'IBM Plex Sans',sans-serif;font-size:12px;font-weight:500;cursor:pointer;white-space:nowrap;}
-.api-drawer-close{background:none;border:none;color:var(--text3);cursor:pointer;font-size:18px;line-height:1;padding:0 4px;}
-.key-indicator{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:0.06em;padding:4px 10px;border-radius:3px;border:0.5px solid var(--border2);color:var(--text3);background:var(--bg3);cursor:pointer;display:flex;align-items:center;gap:5px;transition:all 0.15s;}
-.key-indicator:hover{border-color:var(--gold);color:var(--gold);}
-.key-indicator.active{border-color:var(--green-b);color:var(--green);background:var(--green-l);}
-.key-indicator .ki-dot{width:5px;height:5px;border-radius:50%;background:currentColor;}
-
 .council-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;margin-bottom:1.5rem;}
 .p-card{background:var(--bg2);border:0.5px solid var(--border);border-radius:8px;padding:10px 8px;text-align:center;transition:border-color 0.25s,background 0.25s;position:relative;overflow:hidden;}
 .p-card.speaking{border-color:var(--pc);background:var(--pb);}
@@ -75,11 +38,10 @@ h1{font-family:'Libre Baskerville',serif;font-size:30px;font-weight:400;color:va
 .p-name{font-size:11px;font-weight:500;color:var(--text);margin-bottom:1px;line-height:1.2;}
 .p-role{font-size:9px;color:var(--text3);font-family:'IBM Plex Mono',monospace;margin-bottom:6px;line-height:1.3;}
 .p-stat{font-size:9px;font-family:'IBM Plex Mono',monospace;min-height:14px;}
-
 .asset-area{background:var(--bg2);border:0.5px solid var(--border2);border-radius:8px;padding:1rem 1.25rem;margin-bottom:1rem;}
 .asset-label{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--text3);margin-bottom:8px;display:block;}
 .asset-row{display:flex;gap:10px;align-items:stretch;}
-.asset-sel-wrap{flex:1;position:relative;}
+.asset-sel-wrap{flex:1;}
 select{width:100%;background:var(--bg3);border:0.5px solid var(--border2);border-radius:6px;padding:10px 12px;font-family:'IBM Plex Sans',sans-serif;font-size:13px;color:var(--text);outline:none;cursor:pointer;appearance:none;}
 select:focus{border-color:var(--gold);}
 .custom-wrap{flex:1;display:none;}
@@ -87,25 +49,25 @@ select:focus{border-color:var(--gold);}
 textarea{width:100%;background:var(--bg3);border:0.5px solid var(--border2);border-radius:6px;padding:10px 12px;font-family:'IBM Plex Sans',sans-serif;font-size:13px;color:var(--text);outline:none;resize:vertical;min-height:60px;}
 textarea:focus{border-color:var(--gold);}
 .toggle-custom{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:0.06em;color:var(--gold);cursor:pointer;background:none;border:none;padding:0;margin-top:6px;display:block;text-decoration:underline;}
-.start-btn{background:var(--text);color:#fff;border:none;border-radius:6px;padding:10px 22px;font-family:'IBM Plex Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;white-space:nowrap;transition:background 0.15s,transform 0.1s;letter-spacing:0.01em;}
+.btn-row{display:flex;gap:8px;}
+.start-btn{background:var(--text);color:#fff;border:none;border-radius:6px;padding:10px 22px;font-family:'IBM Plex Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;white-space:nowrap;transition:background 0.15s;}
 .start-btn:hover{background:#2e2b24;}
-.start-btn:active{transform:scale(0.98);}
-.start-btn:disabled{opacity:0.35;cursor:not-allowed;transform:none;}
-.stop-btn{background:none;color:var(--red);border:0.5px solid var(--red-b);border-radius:6px;padding:10px 18px;font-family:'IBM Plex Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;white-space:nowrap;transition:background 0.15s;}
+.start-btn:disabled{opacity:0.35;cursor:not-allowed;}
+.stop-btn{background:none;color:var(--red);border:0.5px solid var(--red-b);border-radius:6px;padding:10px 18px;font-family:'IBM Plex Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;display:none;}
 .stop-btn:hover{background:var(--red-l);}
-
 .prog-track{height:2px;background:var(--border);border-radius:2px;margin-bottom:0.75rem;overflow:hidden;}
-.prog-fill{height:100%;background:linear-gradient(90deg,var(--gold),#c4942a);width:0%;transition:width 0.4s ease;}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--gold),#c4942a);width:0%;transition:width 0.6s ease;}
 .stat-row{display:flex;justify-content:space-between;margin-bottom:0.75rem;}
 .stat-txt{font-size:11px;color:var(--text3);font-family:'IBM Plex Mono',monospace;letter-spacing:0.04em;}
-
+.phase-pills{display:flex;gap:6px;margin-bottom:1rem;flex-wrap:wrap;}
+.phase-pill{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:0.08em;padding:3px 10px;border-radius:20px;border:0.5px solid var(--border2);color:var(--text3);background:var(--bg2);}
+.phase-pill.active{border-color:var(--gold-b);color:var(--gold);background:var(--gold-l);}
+.phase-pill.done{border-color:var(--green-b);color:var(--green);background:var(--green-l);}
 .panel{background:var(--bg2);border:0.5px solid var(--border);border-radius:8px;overflow:hidden;margin-bottom:1.25rem;}
 .panel-hd{padding:9px 16px;border-bottom:0.5px solid var(--border);background:var(--bg3);display:flex;align-items:center;justify-content:space-between;}
 .panel-lbl{font-size:10px;color:var(--text3);font-family:'IBM Plex Mono',monospace;letter-spacing:0.1em;text-transform:uppercase;}
-.round-lbl{font-size:10px;color:var(--text3);font-family:'IBM Plex Mono',monospace;}
-.feed{padding:16px;min-height:240px;max-height:420px;overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--border2) transparent;}
+.feed{padding:16px;min-height:240px;max-height:440px;overflow-y:auto;scrollbar-width:thin;}
 .empty{display:flex;align-items:center;justify-content:center;height:180px;color:var(--text3);font-size:12px;font-family:'IBM Plex Mono',monospace;letter-spacing:0.06em;}
-
 .msg{display:flex;gap:10px;margin-bottom:1.1rem;animation:msgIn 0.3s ease forwards;opacity:0;}
 @keyframes msgIn{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
 .m-av{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'IBM Plex Mono',monospace;font-size:9px;font-weight:500;flex-shrink:0;margin-top:2px;border:0.5px solid var(--border2);}
@@ -115,14 +77,11 @@ textarea:focus{border-color:var(--gold);}
 .m-role{font-size:9px;color:var(--text3);font-family:'IBM Plex Mono',monospace;}
 .m-time{font-size:9px;color:var(--text3);font-family:'IBM Plex Mono',monospace;margin-left:auto;}
 .m-txt{font-size:13px;color:var(--text2);line-height:1.65;background:var(--bg3);border-radius:3px 8px 8px 8px;padding:9px 13px;border:0.5px solid var(--border);}
-.m-txt.streaming::after{content:'▋';animation:cur 0.7s infinite;color:var(--gold);}
-@keyframes cur{0%,100%{opacity:1;}50%{opacity:0;}}
 .m-txt.certified{border-color:var(--green);color:var(--green);background:var(--green-l);}
-
+.m-txt.phase-header{border-color:var(--gold-b);background:var(--gold-l);color:var(--gold);font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:0.06em;}
 .verdict{background:var(--bg2);border-radius:8px;padding:1.5rem;animation:vIn 0.4s ease forwards;opacity:0;}
 @keyframes vIn{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
-.v-ey{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:10px;display:flex;align-items:center;gap:8px;}
-.v-ey::before{content:'';display:inline-block;width:18px;height:1px;}
+.v-ey{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:10px;}
 .v-name{font-family:'Libre Baskerville',serif;font-size:20px;font-weight:400;color:var(--text);margin-bottom:3px;}
 .v-desc{font-size:12px;color:var(--text2);margin-bottom:12px;}
 .v-tier{display:flex;align-items:center;gap:12px;padding:11px 15px;border-radius:6px;margin-bottom:12px;}
@@ -139,9 +98,7 @@ textarea:focus{border-color:var(--gold);}
 .key-pts{margin-top:12px;padding-top:12px;border-top:0.5px solid var(--border);}
 .key-pts-lbl{font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px;}
 .key-pt{font-size:12px;color:var(--text2);padding:4px 0 4px 12px;border-left:2px solid var(--border2);margin-bottom:4px;line-height:1.5;}
-
 footer{text-align:center;font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--text3);letter-spacing:0.08em;margin-top:2.5rem;padding-top:1.5rem;border-top:0.5px solid var(--border);}
-
 @media(max-width:700px){.council-grid{grid-template-columns:repeat(4,1fr);}.scores{grid-template-columns:repeat(3,1fr);}.asset-row{flex-direction:column;}h1{font-size:22px;}}
 </style>
 </head>
@@ -150,7 +107,7 @@ footer{text-align:center;font-family:'IBM Plex Mono',monospace;font-size:10px;co
 <div class="wrap">
 
 <header>
-  <div class="hd-left">
+  <div>
     <p class="eyebrow">DayBlink Consulting — PG&E Engagement</p>
     <h1>Crown Jewels Council</h1>
     <p class="hd-sub">Autonomous AI stakeholder debate simulator — asset scoring &amp; certification</p>
@@ -158,49 +115,40 @@ footer{text-align:center;font-family:'IBM Plex Mono',monospace;font-size:10px;co
   <div class="live-badge"><span class="live-dot"></span>AI Powered</div>
 </header>
 
-<!-- API key handled server-side via Netlify function -->
-
-<div class="council-grid" id="councilGrid">
+<div class="council-grid">
   <div class="p-card" id="card-moderator" style="--pc:#4a1a8b;--pb:var(--purple-l);">
     <div class="p-av" style="background:var(--purple-l);color:var(--purple);">JT</div>
-    <p class="p-name">Jordan Tae</p>
-    <p class="p-role">Chief of Staff / Moderator</p>
+    <p class="p-name">Jordan Tae</p><p class="p-role">Chief of Staff</p>
     <p class="p-stat" id="stat-moderator" style="color:var(--purple);"></p>
   </div>
   <div class="p-card" id="card-ciso" style="--pc:#8b1a1a;--pb:var(--red-l);">
     <div class="p-av" style="background:var(--red-l);color:var(--red);">YE</div>
-    <p class="p-name">Yusuf Ezzy</p>
-    <p class="p-role">CISO</p>
+    <p class="p-name">Yusuf Ezzy</p><p class="p-role">CISO</p>
     <p class="p-stat" id="stat-ciso" style="color:var(--red);"></p>
   </div>
   <div class="p-card" id="card-cio" style="--pc:#1a3d8b;--pb:var(--blue-l);">
     <div class="p-av" style="background:var(--blue-l);color:var(--blue);">DC</div>
-    <p class="p-name">David Chen</p>
-    <p class="p-role">CIO</p>
+    <p class="p-name">David Chen</p><p class="p-role">CIO</p>
     <p class="p-stat" id="stat-cio" style="color:var(--blue);"></p>
   </div>
   <div class="p-card" id="card-grc" style="--pc:#1a6b3a;--pb:var(--green-l);">
     <div class="p-av" style="background:var(--green-l);color:var(--green);">VP</div>
-    <p class="p-name">VP GRC</p>
-    <p class="p-role">Governance &amp; Risk</p>
+    <p class="p-name">VP GRC</p><p class="p-role">Governance &amp; Risk</p>
     <p class="p-stat" id="stat-grc" style="color:var(--green);"></p>
   </div>
   <div class="p-card" id="card-cyberops" style="--pc:#8b4a0a;--pb:var(--amber-l);">
     <div class="p-av" style="background:var(--amber-l);color:var(--amber);">VC</div>
-    <p class="p-name">VP Cyber Ops</p>
-    <p class="p-role">Cyber Operations</p>
+    <p class="p-name">VP Cyber Ops</p><p class="p-role">Cyber Operations</p>
     <p class="p-stat" id="stat-cyberops" style="color:var(--amber);"></p>
   </div>
   <div class="p-card" id="card-techops" style="--pc:#0a6b6b;--pb:var(--teal-l);">
     <div class="p-av" style="background:var(--teal-l);color:var(--teal);">HT</div>
-    <p class="p-name">Head Tech Ops</p>
-    <p class="p-role">Technology Operations</p>
+    <p class="p-name">Head Tech Ops</p><p class="p-role">Technology Ops</p>
     <p class="p-stat" id="stat-techops" style="color:var(--teal);"></p>
   </div>
   <div class="p-card" id="card-secarch" style="--pc:#4a1a8b;--pb:var(--purple-l);">
     <div class="p-av" style="background:var(--purple-l);color:var(--purple);">SA</div>
-    <p class="p-name">VP Sec Arch</p>
-    <p class="p-role">Security Architecture</p>
+    <p class="p-name">VP Sec Arch</p><p class="p-role">Security Architecture</p>
     <p class="p-stat" id="stat-secarch" style="color:var(--purple);"></p>
   </div>
 </div>
@@ -215,19 +163,28 @@ footer{text-align:center;font-family:'IBM Plex Mono',monospace;font-size:10px;co
         <option value="iam">Identity &amp; Access Management (IAM) Platform</option>
         <option value="sharepoint">Enterprise SharePoint Intranet</option>
         <option value="servicedesk">IT Service Desk Portal</option>
-        <option value="custom">— Enter custom asset —</option>
       </select>
     </div>
     <div class="custom-wrap" id="customWrap">
       <textarea id="customAsset" placeholder="Describe the asset: name, type, what data it holds, who owns it, any regulatory flags..."></textarea>
     </div>
-    <button class="start-btn" id="startBtn" onclick="startDebate()">Start debate</button>
-    <button class="stop-btn" id="stopBtn" onclick="stopDebate()" style="display:none;">Stop</button>
+    <div class="btn-row">
+      <button class="start-btn" id="startBtn" onclick="startDebate()">Start debate</button>
+      <button class="stop-btn" id="stopBtn" onclick="stopDebate()">Stop</button>
+    </div>
   </div>
   <button class="toggle-custom" id="toggleCustom" onclick="toggleCustom()">+ Enter a custom asset instead</button>
 </div>
 
 <div class="prog-track"><div class="prog-fill" id="progFill"></div></div>
+
+<div class="phase-pills" id="phasePills">
+  <span class="phase-pill" id="pill-1">1 · Opening scores</span>
+  <span class="phase-pill" id="pill-2">2 · Debate &amp; challenge</span>
+  <span class="phase-pill" id="pill-3">3 · Resolution</span>
+  <span class="phase-pill" id="pill-4">4 · Certification</span>
+</div>
+
 <div class="stat-row">
   <span class="stat-txt" id="statTxt">Select an asset and start the debate</span>
   <span class="stat-txt" id="roundTxt"></span>
@@ -236,7 +193,7 @@ footer{text-align:center;font-family:'IBM Plex Mono',monospace;font-size:10px;co
 <div class="panel">
   <div class="panel-hd">
     <span class="panel-lbl">Live transcript</span>
-    <span class="round-lbl" id="roundLbl"></span>
+    <span class="panel-lbl" id="roundLbl"></span>
   </div>
   <div class="feed" id="feed">
     <div class="empty" id="emptyState">— awaiting session start —</div>
@@ -250,129 +207,57 @@ footer{text-align:center;font-family:'IBM Plex Mono',monospace;font-size:10px;co
 
 <script>
 const PERSONAS = {
-  moderator: {
-    name:'Jordan Tae', role:'Chief of Staff / Moderator', initials:'JT',
-    color:'var(--purple)', bg:'var(--purple-l)', cardId:'card-moderator',
-    model:'claude-sonnet-4-6',
-    system:`You are Jordan Tae, Chief of Staff to PG&E's CISO, facilitating a Crown Jewels scoring session. Be concise — 3-4 sentences max per turn.
-
-ROLE: Introduce the asset, call on members to score it, probe disagreements, close when all certify.
-DO NOT score assets yourself.
-
-When all 6 members have said "I can certify this classification", output ONLY this block:
-===VERDICT===
-ASSET: [name]
-FINAL TIER: [Crown Jewel / High / Moderate / Low]
-SCORES: Confidentiality [X]/5 | Integrity [X]/5 | Availability [X]/5 | Business Impact [X]/5 | Regulatory [X]/5
-KEY POINTS:
-- [point 1]
-- [point 2]
-- [point 3]
-CERTIFIED BY: Yusuf Ezzy, David Chen, VP GRC, VP Cyber Ops, Head Tech Ops, VP Security Architecture
-===END===`
-  },
-  ciso: {
-    name:'Yusuf Ezzy', role:'CISO', initials:'YE',
-    color:'var(--red)', bg:'var(--red-l)', cardId:'card-ciso',
-    model:'claude-sonnet-4-6',
-    system:`You are Yusuf Ezzy, CISO at PG&E. Be concise — 3-5 sentences max per turn.
-
-PERSONA: Direct, evidence-driven. The Q3 2025 breach (47-day dwell, topology maps exposed) happened on your watch — you take security risk personally. You weight confidentiality and lateral movement risk highest. You push back on weak justifications.
-
-Score 1-5 on: Confidentiality, Integrity, Availability, Business Impact, Regulatory Exposure.
-When you agree on the final tier say exactly: "I can certify this classification."`
-  },
-  cio: {
-    name:'David Chen', role:'CIO', initials:'DC',
-    color:'var(--blue)', bg:'var(--blue-l)', cardId:'card-cio',
-    model:'claude-sonnet-4-6',
-    system:`You are David Chen, CIO at PG&E. Be concise — 3-5 sentences max per turn.
-
-PERSONA: Strategic, calm, budget-conscious. You weight availability and business continuity highest. You push back on Crown Jewel designations without clear business justification — CJ status drives security spend. You respect Yusuf but think he sometimes overweights theoretical risk.
-
-Score 1-5 on: Confidentiality, Integrity, Availability, Business Impact, Regulatory Exposure.
-When you agree on the final tier say exactly: "I can certify this classification."`
-  },
-  grc: {
-    name:'VP GRC', role:'Governance, Risk & Compliance', initials:'VP',
-    color:'var(--green)', bg:'var(--green-l)', cardId:'card-grc',
-    model:'claude-sonnet-4-6',
-    system:`You are VP of GRC at PG&E. Be concise — 3-5 sentences max per turn.
-
-PERSONA: Methodical, compliance-driven. You weight regulatory exposure highest — NERC CIP, CPUC, SOX. A Q4 CIP review is approaching and PG&E's 2020 $2.7M fine weighs on you. You push for documented, auditable rationale on every scoring decision.
-
-Score 1-5 on: Confidentiality, Integrity, Availability, Business Impact, Regulatory Exposure.
-When you agree on the final tier say exactly: "I can certify this classification."`
-  },
-  cyberops: {
-    name:'VP Cyber Ops', role:'Cyber Operations & Defense', initials:'VC',
-    color:'var(--amber)', bg:'var(--amber-l)', cardId:'card-cyberops',
-    model:'claude-sonnet-4-6',
-    system:`You are VP of Cyber Ops & Defense at PG&E. Be concise — 3-5 sentences max per turn.
-
-PERSONA: Earnest, new to role (2 months post-incident). You inherited monitoring gaps — the 47-day Q3 dwell time proved it. You weight detectability and attack surface. You flag uncertainty honestly and lean toward higher ratings when coverage is unclear.
-
-Score 1-5 on: Confidentiality, Integrity, Availability, Business Impact, Regulatory Exposure.
-When you agree on the final tier say exactly: "I can certify this classification."`
-  },
-  techops: {
-    name:'Head Tech Ops', role:'Technology Operations', initials:'HT',
-    color:'var(--teal)', bg:'var(--teal-l)', cardId:'card-techops',
-    model:'claude-sonnet-4-6',
-    system:`You are Head of Tech Ops at PG&E. Be concise — 3-5 sentences max per turn.
-
-PERSONA: Pragmatic, slightly territorial. You own the CMDB (18 months stale). You have audit scar tissue and push back on security-driven classifications that ignore operational reality. You know how systems actually connect — not just on paper. You cooperate when your expertise is respected.
-
-Score 1-5 on: Confidentiality, Integrity, Availability, Business Impact, Regulatory Exposure.
-When you agree on the final tier say exactly: "I can certify this classification."`
-  },
-  secarch: {
-    name:'VP Sec Arch', role:'Security Architecture', initials:'SA',
-    color:'var(--purple)', bg:'var(--purple-l)', cardId:'card-secarch',
-    model:'claude-sonnet-4-6',
-    system:`You are the VP of Security Architecture & Engineering at Pacific Gas & Electric (PG&E).
-
-BACKGROUND: You maintain what the DayBlink team has described as "the most trusted asset list within the cyber organization" — but your list is narrower than full business-critical scope. It reflects what you monitor rather than what actually matters to the business. You have deep technical knowledge of PG&E's security architecture, threat landscape, and how systems interact. You are a key methodology input for the Crown Jewels program.
-
-SCORING PRIORITIES:
-- You weight TECHNICAL ATTACK SURFACE and ARCHITECTURE RISK highly
-- You think about how assets fit into the broader security architecture — what they connect to, what they enable, what they expose
-- You bring specific knowledge about known vulnerabilities, attack paths, and threat actor techniques relevant to utility environments
-- You distinguish between what your team currently monitors and what actually needs protection
-- You sometimes surface architecture risks that others haven't considered
-
-PERSONALITY: Technical, precise, occasionally understated. You are respected for your expertise but sometimes perceived as too narrow in your focus (cyber risk vs. business risk). You work closely with Yusuf Ezzy and generally align with CISO priorities but you bring independent technical judgment.
-
-DEBATE STYLE: You contribute specific technical arguments about attack paths, architecture dependencies, and threat intelligence. You sometimes correct misunderstandings about how systems actually work technically. You ask "what does the attack path look like from this asset?" You bring precision to vague risk claims.
-
-SCORING: Use the scale 1-5 on: Confidentiality, Integrity, Availability, Business Impact, Regulatory Exposure.
-
-When you agree with the final classification, say exactly: "I can certify this classification."`
-  }
+  moderator:{name:'Jordan Tae',role:'Chief of Staff',initials:'JT',color:'var(--purple)',bg:'var(--purple-l)',cardId:'card-moderator'},
+  ciso:{name:'Yusuf Ezzy',role:'CISO',initials:'YE',color:'var(--red)',bg:'var(--red-l)',cardId:'card-ciso'},
+  cio:{name:'David Chen',role:'CIO',initials:'DC',color:'var(--blue)',bg:'var(--blue-l)',cardId:'card-cio'},
+  grc:{name:'VP GRC',role:'Governance & Risk',initials:'VP',color:'var(--green)',bg:'var(--green-l)',cardId:'card-grc'},
+  cyberops:{name:'VP Cyber Ops',role:'Cyber Operations',initials:'VC',color:'var(--amber)',bg:'var(--amber-l)',cardId:'card-cyberops'},
+  techops:{name:'Head Tech Ops',role:'Technology Ops',initials:'HT',color:'var(--teal)',bg:'var(--teal-l)',cardId:'card-techops'},
+  secarch:{name:'VP Sec Arch',role:'Security Architecture',initials:'SA',color:'var(--purple)',bg:'var(--purple-l)',cardId:'card-secarch'}
 };
 
 const ASSETS = {
-  scada:{name:'SCADA Control Systems',desc:'Supervisory control systems for electrical grid operations. Direct control of physical infrastructure. Partial air-gap from IT network. NERC CIP BES Cyber System.'},
-  cmdb:{name:'ServiceNow CMDB',desc:"PG&E's primary IT asset inventory system. Contains IP addresses, server hostnames, MAC addresses, OS versions, dependency maps, and network topology for all enterprise IT assets. Currently ~18 months stale. Involved in Q3 2025 breach."},
-  iam:{name:'Identity & Access Management Platform',desc:'Enterprise IAM system managing authentication and authorization for all IT and OT systems. Controls privileged access. Includes PAM capabilities. SOX and NERC CIP scope.'},
-  sharepoint:{name:'Enterprise SharePoint Intranet',desc:'Internal collaboration and document management platform. Hosts HR policies, project documentation, strategic planning documents, and internal communications. Some financial planning materials in scope of SOX review.'},
-  servicedesk:{name:'IT Service Desk Portal',desc:'Employee IT support ticketing system built on ServiceNow. Contains internal request history, device assignments, user PII (names, contact info, device details). No OT or grid connectivity.'}
+  scada:{name:'SCADA Control Systems',desc:"Supervisory control systems for PG&E's electrical grid. Direct control of physical infrastructure including substations and switching. Partial air-gap from IT network. NERC CIP BES Cyber System designation."},
+  cmdb:{name:'ServiceNow CMDB',desc:"PG&E's primary IT asset inventory. Contains IP addresses, hostnames, OS versions, network topology maps for all enterprise IT assets. Currently ~18 months stale. Involved in the Q3 2025 breach — attackers used it for network reconnaissance."},
+  iam:{name:'Identity & Access Management Platform',desc:'Enterprise IAM managing authentication and authorization for all IT and OT systems. Controls privileged access. Includes PAM capabilities. SOX IT controls and NERC CIP scope.'},
+  sharepoint:{name:'Enterprise SharePoint Intranet',desc:'Internal collaboration platform. Hosts HR policies, project docs, strategic planning documents, and financial planning materials. Some content in scope of SOX IT review.'},
+  servicedesk:{name:'IT Service Desk Portal',desc:'Employee IT support ticketing system. Contains internal request history, device assignments, user PII (names, contact info, device details). No OT or grid connectivity.'}
 };
 
-let messages=[], certifications=new Set(), roundCount=0, isRunning=false, timers=[], aborted=false;
+const SYSTEM_CONTEXT = `You are simulating a PG&E Crown Jewels Council scoring session. The council has 6 members:
 
-// API key handled server-side via Netlify function
+- Yusuf Ezzy (CISO): Direct, weights confidentiality/lateral movement risk. The Q3 2025 breach (47-day dwell) happened on his watch — he takes security risk personally. Pushes back on weak justifications.
+- David Chen (CIO): Strategic, budget-conscious. Weights availability and business continuity. Pushes back on CJ designations without clear business justification.
+- VP GRC: Methodical, compliance-driven. Weights regulatory exposure — NERC CIP, CPUC, SOX. PG&E's 2020 $2.7M NERC fine weighs on them. Pushes for auditable rationale.
+- VP Cyber Ops: Earnest, new to role post-incident. Weights detectability and attack surface. Flags monitoring gaps honestly. Leans conservative when uncertain.
+- Head Tech Ops: Pragmatic, slightly territorial. Owns the CMDB (18 months stale). Has audit scar tissue. Pushes back on security-driven classifications that ignore operational reality.
+- VP Sec Arch: Technical, precise. Thinks in attack paths and architecture dependencies. Surfaces risks others miss.
 
-function clearTimers(){timers.forEach(clearTimeout);timers=[];}
+Jordan Tae (Chief of Staff to CISO) facilitates.
+
+Scoring tiers: Crown Jewel (avg 4.5+), High (3.5-4.4), Moderate (2.5-3.4), Low (below 2.5)
+Score each dimension 1-5: Confidentiality, Integrity, Availability, Business Impact, Regulatory Exposure`;
+
+let aborted = false;
+let isRunning = false;
 
 function setProgress(p){document.getElementById('progFill').style.width=p+'%';}
 function setStatus(t){document.getElementById('statTxt').textContent=t;}
 function setRound(t){document.getElementById('roundTxt').textContent=t;document.getElementById('roundLbl').textContent=t;}
 
-function setSpeaking(id){
+function setPhase(n){
+  for(let i=1;i<=4;i++){
+    const el=document.getElementById('pill-'+i);
+    if(i<n)el.className='phase-pill done';
+    else if(i===n)el.className='phase-pill active';
+    else el.className='phase-pill';
+  }
+}
+
+function setSpeaking(ids){
   Object.keys(PERSONAS).forEach(k=>{
     const el=document.getElementById(PERSONAS[k].cardId);
-    if(el)el.classList.toggle('speaking',k===id);
+    if(el)el.classList.toggle('speaking',ids.includes(k));
   });
 }
 
@@ -381,136 +266,95 @@ function setPersonaStat(id,txt){
   if(el)el.textContent=txt;
 }
 
-function addMessage(speakerId,text,streaming=false){
+function addMsg(speakerId,text,extraClass=''){
   const feed=document.getElementById('feed');
   const empty=document.getElementById('emptyState');
   if(empty)empty.remove();
   const p=PERSONAS[speakerId];
-  const certified=text.includes('certify this classification');
   const now=new Date().toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'});
   const div=document.createElement('div');
   div.className='msg';
-  div.id='msg-'+Date.now();
-  div.innerHTML=`<div class="m-av" style="background:${p.bg};color:${p.color};">${p.initials}</div>
-    <div class="m-body">
-      <div class="m-hd"><span class="m-name">${p.name}</span><span class="m-role">${p.role}</span><span class="m-time">${now}</span></div>
-      <p class="m-txt${streaming?' streaming':''}${certified?' certified':''}">${streaming?'':renderMd(text)}</p>
-    </div>`;
+  div.innerHTML='<div class="m-av" style="background:'+p.bg+';color:'+p.color+';">'+p.initials+'</div><div class="m-body"><div class="m-hd"><span class="m-name">'+p.name+'</span><span class="m-role">'+p.role+'</span><span class="m-time">'+now+'</span></div><p class="m-txt '+extraClass+'">'+renderMd(text)+'</p></div>';
   feed.appendChild(div);
   feed.scrollTop=feed.scrollHeight;
-  return div;
+}
+
+function addPhaseHeader(text){
+  const feed=document.getElementById('feed');
+  const empty=document.getElementById('emptyState');
+  if(empty)empty.remove();
+  const div=document.createElement('div');
+  div.className='msg';
+  div.innerHTML='<div class="m-av" style="background:var(--gold-l);color:var(--gold);">—</div><div class="m-body"><div class="m-hd"></div><p class="m-txt phase-header">'+text+'</p></div>';
+  feed.appendChild(div);
+  feed.scrollTop=feed.scrollHeight;
 }
 
 function renderMd(text){
   if(!text)return '';
-  var t=text;
-  t=t.split('**').map(function(s,i){return i%2===1?'<strong>'+s+'</strong>':s;}).join('');
-  t=t.replace(/\n\n/g,'<br><br>').replace(/\n/g,' ');
-  return t;
-}
-
-function updateMessage(div,text,done=false){
-  const p=div.querySelector('.m-txt');
-  if(!p)return;
-  const certified=text.includes('certify this classification');
-  p.innerHTML=renderMd(text);
-  p.className='m-txt'+(done?'':' streaming')+(certified?' certified':'');
-  div.closest('.feed').scrollTop=99999;
-}
-
-function showVerdict(assetName,assetDesc,tier,scores,keyPoints){
-  const tMap={
-    'Crown Jewel':{c:'var(--gold)',bg:'var(--gold-l)',b:'var(--gold-b)',icon:'👑'},
-    'High':{c:'var(--red)',bg:'var(--red-l)',b:'var(--red-b)',icon:'⚠'},
-    'Moderate':{c:'var(--blue)',bg:'var(--blue-l)',b:'var(--blue-b)',icon:'●'},
-    'Low':{c:'var(--text3)',bg:'var(--bg3)',b:'var(--border)',icon:'○'}
-  };
-  const t=tMap[tier]||tMap['Moderate'];
-  const scoreKeys=['Confidentiality','Integrity','Availability','Business Impact','Regulatory'];
-  const scoreVals=scores||['-','-','-','-','-'];
-  const pts=(keyPoints||[]).map(p=>`<div class="key-pt">${p}</div>`).join('');
-  const certPills=Array.from(certifications).map(n=>`<span class="cert-pill">${n}</span>`).join('');
-
-  document.getElementById('verdictArea').innerHTML=`
-    <div class="verdict" style="border:1px solid ${t.b};">
-      <p class="v-ey" style="color:${t.c};--eyec:${t.c};">${t.icon} Council verdict</p>
-      <p class="v-name">${assetName}</p>
-      <p class="v-desc">${assetDesc}</p>
-      <div class="v-tier" style="background:${t.bg};border:0.5px solid ${t.b};">
-        <span class="v-tier-lbl">Final designation</span>
-        <span class="v-tier-val" style="color:${t.c};">${t.icon} ${tier}</span>
-      </div>
-      <div class="scores">
-        ${scoreKeys.map((k,i)=>`<div class="sc"><p class="sc-d">${k}</p><p class="sc-n" style="color:${t.c};">${scoreVals[i]}<span class="sc-den">/5</span></p></div>`).join('')}
-      </div>
-      <div class="key-pts"><p class="key-pts-lbl">Key debate points</p>${pts}</div>
-      <div class="v-cert"><span class="v-cert-lbl">Certified by</span>${certPills}</div>
-    </div>`;
-}
-
-function parseVerdict(text){
-  if(!text.includes('===VERDICT==='))return null;
-  const block=text.split('===VERDICT===')[1].split('===END===')[0];
-  const lines=block.split('\n').map(l=>l.trim()).filter(Boolean);
-  const get=(prefix)=>{const l=lines.find(x=>x.startsWith(prefix));return l?l.replace(prefix,'').trim():null;};
-  const tier=get('FINAL TIER:')||'Moderate';
-  const scoreStr=get('SCORES:');
-  let scores=[3,3,3,3,3];
-  if(scoreStr){
-    const nums=scoreStr.match(/\d+/g);
-    if(nums&&nums.length>=5)scores=nums.slice(0,5).map(Number);
+  var parts=text.split('**');
+  var out='';
+  for(var i=0;i<parts.length;i++){
+    out+= i%2===1 ? '<strong>'+parts[i]+'</strong>' : parts[i];
   }
-  const pts=lines.filter(l=>l.startsWith('-')).map(l=>l.replace(/^-\s*/,''));
-  return{tier,scores,keyPoints:pts};
+  out=out.replace(/\n\n/g,'<br><br>').replace(/\n/g,'<br>');
+  return out;
 }
 
-async function callClaude(persona,conversationHistory){
-  const resp=await fetch('/.netlify/functions/debate',{
+async function callAPI(systemPrompt, userPrompt, maxTokens){
+  const resp = await fetch('/.netlify/functions/debate',{
     method:'POST',
     headers:{'Content-Type':'application/json'},
     body:JSON.stringify({
-      model:persona.model,
-      max_tokens:1024,
-      system:persona.system,
-      messages:conversationHistory
+      system: systemPrompt,
+      messages:[{role:'user',content:userPrompt}],
+      max_tokens: maxTokens
     })
   });
-
   if(!resp.ok){
     const err=await resp.json().catch(()=>({}));
-    throw new Error(err.error?.message||`API error ${resp.status}`);
+    throw new Error(err.error?.message||'API error '+resp.status);
   }
   const data=await resp.json();
   return data.content[0].text;
 }
 
-function toggleCustom(){
-  const wrap=document.getElementById('customWrap');
-  const selWrap=document.getElementById('selWrap');
-  const btn=document.getElementById('toggleCustom');
-  const sel=document.getElementById('assetSelect');
-  const showing=wrap.classList.contains('show');
-  if(showing){
-    wrap.classList.remove('show');
-    selWrap.style.display='';
-    btn.textContent='+ Enter a custom asset instead';
-    sel.value='scada';
-  } else {
-    wrap.classList.add('show');
-    selWrap.style.display='none';
-    btn.textContent='− Use preset asset instead';
-  }
+function parseScores(text){
+  var nums=text.match(/\d+/g);
+  if(nums&&nums.length>=5)return nums.slice(0,5).map(Number);
+  return [3,3,3,3,3];
 }
 
-document.getElementById('assetSelect').addEventListener('change',function(){
-  if(this.value==='custom')toggleCustom();
-});
+function parseTier(text){
+  if(/crown jewel/i.test(text))return 'Crown Jewel';
+  if(/\bhigh\b/i.test(text))return 'High';
+  if(/\bmoderate\b/i.test(text))return 'Moderate';
+  return 'Low';
+}
+
+function showVerdict(assetName,assetDesc,tier,scores,keyPoints){
+  var tMap={'Crown Jewel':{c:'var(--gold)',bg:'var(--gold-l)',b:'var(--gold-b)',icon:'👑'},'High':{c:'var(--red)',bg:'var(--red-l)',b:'var(--red-b)',icon:'⚠'},'Moderate':{c:'var(--blue)',bg:'var(--blue-l)',b:'var(--blue-b)',icon:'●'},'Low':{c:'var(--text3)',bg:'var(--bg3)',b:'var(--border)',icon:'○'}};
+  var t=tMap[tier]||tMap['Moderate'];
+  var dims=['Confidentiality','Integrity','Availability','Business Impact','Regulatory'];
+  var scoreCells=dims.map(function(k,i){return '<div class="sc"><p class="sc-d">'+k+'</p><p class="sc-n" style="color:'+t.c+';">'+(scores[i]||'-')+'<span class="sc-den">/5</span></p></div>';}).join('');
+  var pts=(keyPoints||[]).map(function(p){return '<div class="key-pt">'+p+'</div>';}).join('');
+  var members=['Yusuf Ezzy','David Chen','VP GRC','VP Cyber Ops','Head Tech Ops','VP Sec Arch'];
+  var pills=members.map(function(n){return '<span class="cert-pill">'+n+'</span>';}).join('');
+  document.getElementById('verdictArea').innerHTML='<div class="verdict" style="border:1px solid '+t.b+';"><p class="v-ey" style="color:'+t.c+';">'+t.icon+' Council verdict — certified</p><p class="v-name">'+assetName+'</p><p class="v-desc">'+assetDesc+'</p><div class="v-tier" style="background:'+t.bg+';border:0.5px solid '+t.b+';"><span class="v-tier-lbl">Final designation</span><span class="v-tier-val" style="color:'+t.c+';">'+t.icon+' '+tier+'</span></div><div class="scores">'+scoreCells+'</div><div class="key-pts"><p class="key-pts-lbl">Key debate points</p>'+pts+'</div><div class="v-cert"><span class="v-cert-lbl">Certified by</span>'+pills+'</div></div>';
+}
+
+function toggleCustom(){
+  var wrap=document.getElementById('customWrap');
+  var selWrap=document.getElementById('selWrap');
+  var btn=document.getElementById('toggleCustom');
+  var showing=wrap.classList.contains('show');
+  if(showing){wrap.classList.remove('show');selWrap.style.display='';btn.textContent='+ Enter a custom asset instead';}
+  else{wrap.classList.add('show');selWrap.style.display='none';btn.textContent='− Use preset asset instead';}
+}
 
 function stopDebate(){
-  aborted=true;
-  isRunning=false;
-  setSpeaking(null);
-  setStatus('Debate stopped by user.');
+  aborted=true;isRunning=false;
+  setSpeaking([]);setStatus('Debate stopped.');
   document.getElementById('stopBtn').style.display='none';
   document.getElementById('startBtn').disabled=false;
   document.getElementById('startBtn').textContent='Start debate';
@@ -518,133 +362,198 @@ function stopDebate(){
 
 async function startDebate(){
   if(isRunning)return;
-  isRunning=true;
-  clearTimers();
-  certifications=new Set();
-  roundCount=0;
-  messages=[];
+  isRunning=true;aborted=false;
 
-  const isCustom=document.getElementById('customWrap').classList.contains('show');
-  let assetName,assetDesc;
+  var isCustom=document.getElementById('customWrap').classList.contains('show');
+  var assetName,assetDesc;
   if(isCustom){
-    const custom=document.getElementById('customAsset').value.trim();
-    if(!custom){setStatus('Please describe your custom asset');isRunning=false;return;}
-    assetName='Custom Asset';
-    assetDesc=custom;
+    var custom=document.getElementById('customAsset').value.trim();
+    if(!custom){setStatus('Please describe your custom asset.');isRunning=false;return;}
+    assetName='Custom Asset';assetDesc=custom;
   } else {
-    const key=document.getElementById('assetSelect').value;
-    const a=ASSETS[key];
-    assetName=a.name;
-    assetDesc=a.desc;
+    var key=document.getElementById('assetSelect').value;
+    var a=ASSETS[key];assetName=a.name;assetDesc=a.desc;
   }
 
-  aborted=false;
   document.getElementById('startBtn').disabled=true;
   document.getElementById('startBtn').textContent='Debate in progress...';
   document.getElementById('stopBtn').style.display='';
   document.getElementById('verdictArea').innerHTML='';
   document.getElementById('feed').innerHTML='<div class="empty" id="emptyState">— initializing council session —</div>';
-  Object.keys(PERSONAS).forEach(k=>{setPersonaStat(k,'');document.getElementById(PERSONAS[k].cardId).classList.remove('speaking');});
-  setProgress(0);
-  setStatus('Starting autonomous debate...');
-  setRound('');
+  Object.keys(PERSONAS).forEach(function(k){setPersonaStat(k,'');document.getElementById(PERSONAS[k].cardId).classList.remove('speaking');});
+  setProgress(0);setPhase(0);setStatus('Starting debate...');setRound('');
 
-  const assetContext=`ASSET BEING SCORED:\nName: ${assetName}\nDescription: ${assetDesc}`;
-  const speakerOrder=['moderator','ciso','cio','grc','cyberops','techops','secarch'];
-  const allVoices=['ciso','cio','grc','cyberops','techops','secarch'];
-  const maxRounds=20;
-  let verdictFound=false;
+  var assetInfo='ASSET: '+assetName+'\n'+assetDesc;
 
   try {
-    while(roundCount<maxRounds && !verdictFound && !aborted){
-      roundCount++;
-      setRound(`Round ${roundCount}`);
-      setProgress(Math.min(90,roundCount*5));
 
-      const speakers=roundCount===1?speakerOrder:
-        [...allVoices.sort(()=>Math.random()-0.5),'moderator'];
+    // ── PHASE 1: Opening scores ───────────────────────────────
+    if(aborted)throw new Error('stopped');
+    setPhase(1);setProgress(10);
+    setStatus('Council members presenting initial scores...');
+    setSpeaking(['ciso','cio','grc','cyberops','techops','secarch']);
+    addPhaseHeader('Phase 1 — Opening scores');
 
-      for(const speakerId of speakers){
-        if(verdictFound||aborted)break;
-        const persona=PERSONAS[speakerId];
-        setSpeaking(speakerId);
-        setStatus(`${persona.name} is speaking...`);
+    var phase1 = await callAPI(
+      SYSTEM_CONTEXT,
+      assetInfo+'\n\nPhase 1: Each of the 6 council members should now present their initial scores across all 5 dimensions with brief reasoning. Format each response as:\n\n[NAME] (Role):\nScores: C:[X] I:[X] A:[X] BI:[X] R:[X]\n[2-3 sentence reasoning]\n\nBe realistic — not every asset is a Crown Jewel. Let personalities show through. Include some disagreement.',
+      900
+    );
+    if(aborted)throw new Error('stopped');
 
-        const history=[
-          {role:'user',content:`${assetContext}\n\nThis is the Crown Jewels Council scoring session. ${
-            roundCount===1 && speakerId==='moderator'
-              ? 'Please open the session, introduce the asset, and call on council members to begin scoring.'
-              : roundCount===1
-              ? `The moderator has opened the session. Please present your initial scores and reasoning for this asset. Be specific about your scores on each dimension (1-5): Confidentiality, Integrity, Availability, Business Impact, Regulatory Exposure.`
-              : `Continue the debate. Current certifications: ${certifications.size===0?'none yet':Array.from(certifications).join(', ')}. ${
-                certifications.size>=4?'Most members have certified. If you agree with the emerging consensus, certify now.':
-                'Engage with arguments made, challenge or support positions, and move toward or away from consensus based on your genuine assessment.'
-              } Previous discussion:\n\n${messages.slice(-8).map(m=>`${m.speaker}: ${m.text}`).join('\n\n')}`
-          }`}
-        ];
-
-        const msgDiv=addMessage(speakerId,'',true);
-        let fullText='';
-
-        try {
-          fullText=await callClaude(persona,history);
-        } catch(e){
-          fullText=`[Connection error: ${e.message}]`;
-        }
-
-        updateMessage(msgDiv,fullText,true);
-        messages.push({speaker:persona.name,speakerId,text:fullText});
-
-        if(fullText.toLowerCase().includes('certify this classification')){
-          certifications.add(persona.name);
-          setPersonaStat(speakerId,'✓ Certified');
-          setStatus(`${persona.name} certified — ${certifications.size}/${allVoices.length} certified`);
-        }
-
-        if(allVoices.every(id=>certifications.has(PERSONAS[id].name))){
-          verdictFound=true;
-          setProgress(95);
-          setStatus('All council members certified — generating verdict...');
-          break;
-        }
-
-        await new Promise(r=>setTimeout(r,300));
-      }
+    // Parse and display each member's opening
+    var members=['Yusuf Ezzy','David Chen','VP GRC','VP Cyber Ops','Head Tech Ops','VP Sec Arch'];
+    var memberIds=['ciso','cio','grc','cyberops','techops','secarch'];
+    var sections=phase1.split(/\n(?=[A-Z])/);
+    if(sections.length<3){
+      // fallback: show as single moderator summary
+      addMsg('moderator', phase1);
+    } else {
+      sections.forEach(function(section,i){
+        if(!section.trim())return;
+        var matchedId='moderator';
+        memberIds.forEach(function(id,j){
+          if(section.toLowerCase().includes(members[j].toLowerCase().split(' ')[0])||
+             section.toLowerCase().includes(PERSONAS[id].role.toLowerCase().split(' ')[0])){
+            matchedId=id;
+          }
+        });
+        setTimeout(function(){addMsg(matchedId,section.trim());},i*400);
+      });
     }
 
-    setSpeaking(null);
+    await new Promise(function(r){setTimeout(r,sections.length*400+500);});
+    if(aborted)throw new Error('stopped');
+    setProgress(30);
+    Object.keys(PERSONAS).forEach(function(k){setPersonaStat(k,'');});
+
+    // ── PHASE 2: Debate & challenge ───────────────────────────
+    setPhase(2);setProgress(40);
+    setStatus('Stakeholders debating disagreements...');
+    setSpeaking(['ciso','cio','techops']);
+    addPhaseHeader('Phase 2 — Debate & challenge');
+
+    var phase2 = await callAPI(
+      SYSTEM_CONTEXT,
+      assetInfo+'\n\nPhase 1 scores are in. Phase 2: The council should now debate the key disagreements. Pick the 2-3 most interesting tensions from the opening scores and have the relevant members argue their positions. At least one person should push back on another\'s score with a specific counter-argument. Show real personality — the Head of Tech Ops should be defensive, the CIO should demand business justification, the CISO should reference the Q3 breach if relevant. Format as natural dialogue with speaker names.',
+      800
+    );
+    if(aborted)throw new Error('stopped');
+
+    var debateLines=phase2.split('\n').filter(function(l){return l.trim();});
+    var debateDelay=0;
+    debateLines.forEach(function(line){
+      if(!line.trim())return;
+      var speakerId='moderator';
+      memberIds.forEach(function(id,j){
+        if(line.toLowerCase().includes(members[j].toLowerCase().split(' ')[0])||
+           line.toLowerCase().includes(PERSONAS[id].name.toLowerCase().split(' ')[0])){
+          speakerId=id;
+        }
+      });
+      setTimeout(function(){addMsg(speakerId,line.replace(/^[^:]+:\s*/,'').trim());},debateDelay);
+      debateDelay+=350;
+    });
+
+    await new Promise(function(r){setTimeout(r,debateDelay+500);});
+    if(aborted)throw new Error('stopped');
+    setProgress(60);
+
+    // ── PHASE 3: Resolution ────────────────────────────────────
+    setPhase(3);setProgress(65);
+    setStatus('Resolving disagreements...');
+    setSpeaking(['moderator','ciso','cio']);
+    addPhaseHeader('Phase 3 — Resolution');
+
+    var phase3 = await callAPI(
+      SYSTEM_CONTEXT,
+      assetInfo+'\n\nPhase 3: Jordan Tae now pushes the group toward resolution. Key disagreements need to be explicitly resolved — someone needs to move their position or convince others. End this phase with a provisional consensus on the final tier and documented rationale. Jordan Tae should summarize the agreed rationale in 2-3 sentences.',
+      600
+    );
+    if(aborted)throw new Error('stopped');
+
+    var resolLines=phase3.split('\n').filter(function(l){return l.trim();});
+    var resolDelay=0;
+    resolLines.forEach(function(line){
+      if(!line.trim())return;
+      var speakerId='moderator';
+      if(line.toLowerCase().includes('yusuf')||line.toLowerCase().includes('ciso'))speakerId='ciso';
+      else if(line.toLowerCase().includes('david')||line.toLowerCase().includes('cio'))speakerId='cio';
+      else if(line.toLowerCase().includes('grc'))speakerId='grc';
+      else if(line.toLowerCase().includes('cyber ops')||line.toLowerCase().includes('cyberops'))speakerId='cyberops';
+      else if(line.toLowerCase().includes('tech ops')||line.toLowerCase().includes('techops'))speakerId='techops';
+      else if(line.toLowerCase().includes('sec arch')||line.toLowerCase().includes('security arch'))speakerId='secarch';
+      setTimeout(function(){addMsg(speakerId,line.replace(/^[^:]+:\s*/,'').trim());},resolDelay);
+      resolDelay+=350;
+    });
+
+    await new Promise(function(r){setTimeout(r,resolDelay+500);});
+    if(aborted)throw new Error('stopped');
+    setProgress(80);
+
+    // ── PHASE 4: Certification & verdict ──────────────────────
+    setPhase(4);setProgress(85);
+    setStatus('Collecting certifications...');
+    setSpeaking(['ciso','cio','grc','cyberops','techops','secarch']);
+    addPhaseHeader('Phase 4 — Certification');
+
+    var phase4 = await callAPI(
+      SYSTEM_CONTEXT,
+      assetInfo+'\n\nPhase 4: Each of the 6 council members now formally certifies the classification. Each should say "I can certify this classification" and optionally note one condition or caveat. Then provide a final structured verdict:\n\nFINAL TIER: [Crown Jewel / High / Moderate / Low]\nCONSENSUS SCORES: C:[X] I:[X] A:[X] BI:[X] R:[X]\nKEY POINTS:\n- [point 1]\n- [point 2]\n- [point 3]',
+      700
+    );
+    if(aborted)throw new Error('stopped');
+
+    // Show certifications
+    var certLines=phase4.split('\n').filter(function(l){return l.trim();});
+    var certDelay=0;
+    certLines.forEach(function(line){
+      if(!line.trim())return;
+      if(line.includes('FINAL TIER')||line.includes('CONSENSUS')||line.includes('KEY POINTS')||line.startsWith('-'))return;
+      var speakerId='moderator';
+      memberIds.forEach(function(id,j){
+        if(line.toLowerCase().includes(members[j].toLowerCase().split(' ')[0])||
+           line.toLowerCase().includes(PERSONAS[id].name.toLowerCase().split(' ')[0])){
+          speakerId=id;
+        }
+      });
+      var isCert=line.toLowerCase().includes('certify');
+      setTimeout(function(){
+        addMsg(speakerId,line.replace(/^[^:]+:\s*/,'').trim(),isCert?'certified':'');
+        if(isCert)setPersonaStat(speakerId,'✓ Certified');
+      },certDelay);
+      certDelay+=400;
+    });
+
+    await new Promise(function(r){setTimeout(r,certDelay+500);});
+    if(aborted)throw new Error('stopped');
+
+    // Parse verdict
+    var tier=parseTier(phase4);
+    var scoreMatch=phase4.match(/C:(\d)\s*I:(\d)\s*A:(\d)\s*BI:(\d)\s*R:(\d)/);
+    var scores=scoreMatch?[1,2,3,4,5].map(function(i){return parseInt(scoreMatch[i]);}): [4,4,4,4,4];
+    var keyPoints=[];
+    var kpMatch=phase4.match(/KEY POINTS:([\s\S]*?)(?:\n\n|$)/);
+    if(kpMatch){
+      keyPoints=kpMatch[1].split('\n').filter(function(l){return l.trim().startsWith('-');}).map(function(l){return l.replace(/^-\s*/,'').trim();});
+    }
+
+    setSpeaking([]);
     setProgress(100);
-
-    const lastMod=messages.filter(m=>m.speakerId==='moderator').pop();
-    let tier='High',scores=[4,4,4,4,4],keyPoints=['Full council reached consensus after debate.'];
-
-    if(lastMod){
-      const parsed=parseVerdict(lastMod.text);
-      if(parsed){tier=parsed.tier;scores=parsed.scores;keyPoints=parsed.keyPoints;}
-    }
-
-    if(!lastMod||!parseVerdict(lastMod?.text||'')){
-      const persona=PERSONAS['moderator'];
-      setSpeaking('moderator');
-      setStatus('Moderator closing session...');
-      const closingHistory=[{role:'user',content:`${assetContext}\n\nThe debate is complete. All certifications: ${Array.from(certifications).join(', ')}. Here is the full debate:\n\n${messages.map(m=>`${m.speaker}: ${m.text}`).join('\n\n')}\n\nPlease provide the final closing summary in the exact ===VERDICT=== format from your instructions.`}];
-      const closing=await callClaude(persona,closingHistory);
-      addMessage('moderator',closing,false);
-      messages.push({speaker:persona.name,speakerId:'moderator',text:closing});
-      const parsed=parseVerdict(closing);
-      if(parsed){tier=parsed.tier;scores=parsed.scores;keyPoints=parsed.keyPoints;}
-    }
-
+    setPhase(5);
+    setStatus('Session complete — '+assetName+' designated '+tier);
+    setRound('4 phases · ~4 API calls');
     showVerdict(assetName,assetDesc,tier,scores,keyPoints);
-    setStatus(`Session complete — ${assetName} designated ${tier}`);
-    setRound(`${roundCount} rounds · ${messages.length} exchanges`);
+    Object.keys(PERSONAS).forEach(function(k){if(k!=='moderator')setPersonaStat(k,'✓ Certified');});
 
   } catch(e){
-    setStatus('Error: '+e.message);
-    console.error(e);
+    if(e.message!=='stopped'){
+      setStatus('Error: '+e.message);
+      console.error(e);
+    }
   }
 
-  setSpeaking(null);
+  setSpeaking([]);
   isRunning=false;
   document.getElementById('stopBtn').style.display='none';
   document.getElementById('startBtn').disabled=false;
