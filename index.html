@@ -4,796 +4,761 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Crown Jewels Council — PG&E Asset Scoring Simulator</title>
-<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-  :root {
-    --bg: #f5f4f0;
-    --bg2: #ffffff;
-    --bg3: #f9f8f5;
-    --border: rgba(0,0,0,0.08);
-    --border2: rgba(0,0,0,0.13);
-    --text: #1a1c22;
-    --text2: #555b6a;
-    --text3: #9b9fa8;
-    --gold: #9a6f1e;
-    --gold2: #b8861f;
-    --gold-bg: rgba(154,111,30,0.07);
-    --green: #1a7a56;
-    --green-bg: rgba(26,122,86,0.07);
-    --blue: #185fa5;
-    --blue-bg: rgba(24,95,165,0.07);
-    --amber: #8a5010;
-    --amber-bg: rgba(138,80,16,0.07);
-    --purple: #5b3fa8;
-    --purple-bg: rgba(91,63,168,0.07);
-  }
-
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'DM Sans', sans-serif;
-    font-weight: 300;
-    min-height: 100vh;
-  }
-
-  .dot-bg {
-    position: fixed;
-    inset: 0;
-    background-image: radial-gradient(circle, rgba(0,0,0,0.06) 1px, transparent 1px);
-    background-size: 28px 28px;
-    pointer-events: none;
-    z-index: 0;
-  }
-
-  .container {
-    position: relative;
-    z-index: 1;
-    max-width: 960px;
-    margin: 0 auto;
-    padding: 2.5rem 1.5rem 4rem;
-  }
-
-  header {
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    margin-bottom: 2.5rem;
-    padding-bottom: 2rem;
-    border-bottom: 0.5px solid var(--border2);
-  }
-
-  .eyebrow {
-    font-family: 'DM Mono', monospace;
-    font-size: 11px;
-    letter-spacing: 0.12em;
-    color: var(--gold);
-    text-transform: uppercase;
-    margin-bottom: 8px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-
-  .eyebrow::before {
-    content: '';
-    display: inline-block;
-    width: 20px;
-    height: 1px;
-    background: var(--gold);
-  }
-
-  h1 {
-    font-family: 'DM Serif Display', serif;
-    font-size: 32px;
-    font-weight: 400;
-    color: var(--text);
-    line-height: 1.2;
-    margin-bottom: 6px;
-  }
-
-  .header-sub {
-    font-size: 14px;
-    color: var(--text2);
-    font-weight: 300;
-  }
-
-  .badge {
-    font-family: 'DM Mono', monospace;
-    font-size: 10px;
-    letter-spacing: 0.08em;
-    padding: 5px 12px;
-    border-radius: 20px;
-    border: 0.5px solid var(--border2);
-    color: var(--text2);
-    white-space: nowrap;
-    background: var(--bg2);
-  }
-
-  .badge.live {
-    border-color: var(--green);
-    color: var(--green);
-    background: var(--green-bg);
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
-
-  .badge.live::before {
-    content: '';
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: var(--green);
-    animation: pulse 2s infinite;
-  }
-
-  @keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.3; }
-  }
-
-  .council-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 10px;
-    margin-bottom: 1.5rem;
-  }
-
-  .persona-card {
-    background: var(--bg2);
-    border: 0.5px solid var(--border);
-    border-radius: 12px;
-    padding: 14px;
-    transition: border-color 0.3s, background 0.3s, box-shadow 0.3s;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .persona-card.speaking {
-    border-color: var(--speaker-color);
-    background: var(--speaker-bg);
-    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
-  }
-
-  .persona-card.speaking::before {
-    content: 'Speaking';
-    position: absolute;
-    top: 8px;
-    right: 10px;
-    font-family: 'DM Mono', monospace;
-    font-size: 9px;
-    letter-spacing: 0.08em;
-    color: var(--speaker-color);
-    text-transform: uppercase;
-  }
-
-  .persona-avatar {
-    width: 38px;
-    height: 38px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: 'DM Mono', monospace;
-    font-size: 12px;
-    font-weight: 500;
-    margin-bottom: 10px;
-    border: 0.5px solid var(--border2);
-  }
-
-  .persona-name {
-    font-size: 13px;
-    font-weight: 500;
-    color: var(--text);
-    margin-bottom: 2px;
-  }
-
-  .persona-role {
-    font-size: 11px;
-    color: var(--text3);
-    font-family: 'DM Mono', monospace;
-    margin-bottom: 8px;
-  }
-
-  .persona-status {
-    font-size: 11px;
-    min-height: 16px;
-    font-family: 'DM Mono', monospace;
-  }
-
-  .controls-row {
-    display: grid;
-    grid-template-columns: 1fr auto;
-    gap: 12px;
-    margin-bottom: 1.25rem;
-    align-items: center;
-  }
-
-  .asset-select-wrap {
-    background: var(--bg2);
-    border: 0.5px solid var(--border2);
-    border-radius: 10px;
-    padding: 0 14px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.04);
-  }
-
-  .asset-select-label {
-    font-size: 11px;
-    color: var(--text3);
-    font-family: 'DM Mono', monospace;
-    letter-spacing: 0.06em;
-    white-space: nowrap;
-  }
-
-  select {
-    background: transparent;
-    border: none;
-    outline: none;
-    color: var(--text);
-    font-family: 'DM Sans', sans-serif;
-    font-size: 14px;
-    font-weight: 400;
-    padding: 14px 0;
-    width: 100%;
-    cursor: pointer;
-    appearance: none;
-  }
-
-  .start-btn {
-    background: var(--text);
-    color: #ffffff;
-    border: none;
-    border-radius: 10px;
-    padding: 14px 24px;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 14px;
-    font-weight: 500;
-    cursor: pointer;
-    white-space: nowrap;
-    transition: background 0.2s, transform 0.1s;
-    letter-spacing: 0.01em;
-  }
-
-  .start-btn:hover { background: #2e3340; }
-  .start-btn:active { transform: scale(0.98); }
-  .start-btn:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
-
-  .progress-track {
-    height: 2px;
-    background: var(--border2);
-    border-radius: 2px;
-    margin-bottom: 1rem;
-    overflow: hidden;
-  }
-
-  .progress-fill {
-    height: 100%;
-    background: linear-gradient(90deg, var(--gold), var(--gold2));
-    border-radius: 2px;
-    width: 0%;
-    transition: width 0.5s ease;
-  }
-
-  .status-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 1rem;
-  }
-
-  .status-text {
-    font-size: 12px;
-    color: var(--text3);
-    font-family: 'DM Mono', monospace;
-    letter-spacing: 0.04em;
-  }
-
-  .round-count {
-    font-size: 12px;
-    color: var(--text3);
-    font-family: 'DM Mono', monospace;
-  }
-
-  .debate-panel {
-    background: var(--bg2);
-    border: 0.5px solid var(--border);
-    border-radius: 14px;
-    overflow: hidden;
-    margin-bottom: 1.5rem;
-    box-shadow: 0 1px 6px rgba(0,0,0,0.04);
-  }
-
-  .debate-panel-header {
-    padding: 11px 18px;
-    border-bottom: 0.5px solid var(--border);
-    background: var(--bg3);
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-
-  .panel-label {
-    font-size: 11px;
-    color: var(--text3);
-    font-family: 'DM Mono', monospace;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-  }
-
-  .debate-feed {
-    padding: 18px;
-    min-height: 260px;
-    max-height: 360px;
-    overflow-y: auto;
-    scrollbar-width: thin;
-    scrollbar-color: var(--border2) transparent;
-  }
-
-  .debate-empty {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 200px;
-    color: var(--text3);
-    font-size: 13px;
-    font-family: 'DM Mono', monospace;
-    letter-spacing: 0.04em;
-  }
-
-  .message {
-    display: flex;
-    gap: 12px;
-    margin-bottom: 1.25rem;
-    animation: msgIn 0.35s ease forwards;
-    opacity: 0;
-  }
-
-  @keyframes msgIn {
-    from { opacity: 0; transform: translateY(8px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-
-  .msg-avatar {
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: 'DM Mono', monospace;
-    font-size: 10px;
-    font-weight: 500;
-    flex-shrink: 0;
-    margin-top: 2px;
-    border: 0.5px solid var(--border2);
-  }
-
-  .msg-body { flex: 1; }
-
-  .msg-header {
-    display: flex;
-    align-items: baseline;
-    gap: 8px;
-    margin-bottom: 5px;
-  }
-
-  .msg-name { font-size: 12px; font-weight: 500; color: var(--text); }
-  .msg-role { font-size: 10px; color: var(--text3); font-family: 'DM Mono', monospace; }
-
-  .msg-text {
-    font-size: 14px;
-    color: var(--text2);
-    line-height: 1.65;
-    background: var(--bg3);
-    border-radius: 4px 10px 10px 10px;
-    padding: 10px 14px;
-    border: 0.5px solid var(--border);
-  }
-
-  .msg-text.certified {
-    border-color: var(--green);
-    color: var(--green);
-    background: var(--green-bg);
-  }
-
-  .verdict-card {
-    background: var(--bg2);
-    border: 1px solid var(--gold);
-    border-radius: 14px;
-    padding: 1.5rem;
-    animation: verdictIn 0.5s ease forwards;
-    opacity: 0;
-    box-shadow: 0 2px 16px rgba(154,111,30,0.08);
-  }
-
-  @keyframes verdictIn {
-    from { opacity: 0; transform: translateY(12px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-
-  .verdict-eyebrow {
-    font-family: 'DM Mono', monospace;
-    font-size: 10px;
-    letter-spacing: 0.1em;
-    color: var(--gold);
-    text-transform: uppercase;
-    margin-bottom: 12px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-
-  .verdict-eyebrow::before {
-    content: '';
-    display: inline-block;
-    width: 16px;
-    height: 1px;
-    background: var(--gold);
-  }
-
-  .verdict-asset-name {
-    font-family: 'DM Serif Display', serif;
-    font-size: 22px;
-    font-weight: 400;
-    color: var(--text);
-    margin-bottom: 4px;
-  }
-
-  .verdict-tier-row {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    margin: 14px 0;
-    padding: 12px 16px;
-    background: var(--gold-bg);
-    border-radius: 8px;
-    border: 0.5px solid rgba(154,111,30,0.2);
-  }
-
-  .verdict-tier-label {
-    font-family: 'DM Mono', monospace;
-    font-size: 11px;
-    color: var(--text3);
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-  }
-
-  .verdict-tier-value {
-    font-family: 'DM Serif Display', serif;
-    font-size: 22px;
-    color: var(--gold);
-  }
-
-  .scores-row {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    gap: 8px;
-    margin: 14px 0;
-  }
-
-  .score-cell {
-    background: var(--bg3);
-    border: 0.5px solid var(--border);
-    border-radius: 8px;
-    padding: 10px 8px;
-    text-align: center;
-  }
-
-  .score-dim {
-    font-size: 9px;
-    color: var(--text3);
-    font-family: 'DM Mono', monospace;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    margin-bottom: 5px;
-    line-height: 1.3;
-  }
-
-  .score-num {
-    font-family: 'DM Serif Display', serif;
-    font-size: 22px;
-    color: var(--gold);
-    line-height: 1;
-  }
-
-  .score-denom { font-size: 11px; color: var(--text3); }
-
-  .certified-row {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin-top: 14px;
-    padding-top: 14px;
-    border-top: 0.5px solid var(--border);
-    flex-wrap: wrap;
-  }
-
-  .certified-label {
-    font-family: 'DM Mono', monospace;
-    font-size: 10px;
-    color: var(--text3);
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-  }
-
-  .certified-badge {
-    font-size: 11px;
-    color: var(--green);
-    background: var(--green-bg);
-    border: 0.5px solid rgba(26,122,86,0.25);
-    border-radius: 20px;
-    padding: 3px 10px;
-    font-family: 'DM Mono', monospace;
-  }
-
-  .divider { height: 0.5px; background: var(--border2); margin: 2.5rem 0; }
-
-  footer {
-    text-align: center;
-    font-family: 'DM Mono', monospace;
-    font-size: 11px;
-    color: var(--text3);
-    letter-spacing: 0.06em;
-  }
-
-  @media (max-width: 640px) {
-    .council-grid { grid-template-columns: repeat(2, 1fr); }
-    .scores-row { grid-template-columns: repeat(3, 1fr); }
-    .controls-row { grid-template-columns: 1fr; }
-    h1 { font-size: 24px; }
-  }
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bg:#f7f5f0;
+  --bg2:#ffffff;
+  --bg3:#f0ede6;
+  --border:rgba(0,0,0,0.09);
+  --border2:rgba(0,0,0,0.15);
+  --text:#1c1a16;
+  --text2:#5a5650;
+  --text3:#9a958e;
+  --gold:#8b6914;
+  --gold-l:#f5edda;
+  --gold-b:rgba(139,105,20,0.2);
+  --red:#8b1a1a;
+  --red-l:#faeaea;
+  --red-b:rgba(139,26,26,0.2);
+  --blue:#1a3d8b;
+  --blue-l:#eaeefc;
+  --blue-b:rgba(26,61,139,0.2);
+  --green:#1a6b3a;
+  --green-l:#e8f5ee;
+  --green-b:rgba(26,107,58,0.2);
+  --purple:#4a1a8b;
+  --purple-l:#eeebfc;
+  --purple-b:rgba(74,26,139,0.2);
+  --amber:#8b4a0a;
+  --amber-l:#fdf0e0;
+  --amber-b:rgba(139,74,10,0.2);
+  --teal:#0a6b6b;
+  --teal-l:#e0f5f5;
+  --teal-b:rgba(10,107,107,0.2);
+}
+body{background:var(--bg);color:var(--text);font-family:'IBM Plex Sans',sans-serif;font-weight:300;min-height:100vh;}
+
+.paper-bg{position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg width='200' height='200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");pointer-events:none;z-index:0;}
+
+.wrap{position:relative;z-index:1;max-width:1020px;margin:0 auto;padding:2.5rem 1.5rem 5rem;}
+
+header{border-bottom:1px solid var(--border2);padding-bottom:1.75rem;margin-bottom:2rem;display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;}
+.hd-left{}
+.eyebrow{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold);margin-bottom:10px;display:flex;align-items:center;gap:10px;}
+.eyebrow::before{content:'';display:inline-block;width:24px;height:1px;background:var(--gold);}
+h1{font-family:'Libre Baskerville',serif;font-size:30px;font-weight:400;color:var(--text);line-height:1.2;margin-bottom:5px;}
+.hd-sub{font-size:13px;color:var(--text2);}
+.live-badge{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:0.08em;padding:5px 12px;border-radius:3px;border:0.5px solid var(--green-b);color:var(--green);background:var(--green-l);display:flex;align-items:center;gap:6px;white-space:nowrap;flex-shrink:0;}
+.live-dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:blink 2s infinite;}
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:0.2;}}
+
+.api-banner{display:none;}
+.api-drawer{position:fixed;bottom:0;left:0;right:0;background:var(--bg2);border-top:0.5px solid var(--border2);padding:10px 20px;display:flex;align-items:center;gap:12px;z-index:200;transform:translateY(100%);transition:transform 0.25s ease;box-shadow:0 -4px 20px rgba(0,0,0,0.08);}
+.api-drawer.open{transform:translateY(0);}
+.api-drawer input{flex:1;max-width:480px;border:0.5px solid var(--border2);border-radius:4px;padding:7px 10px;font-family:'IBM Plex Mono',monospace;font-size:12px;background:var(--bg3);color:var(--text);outline:none;}
+.api-drawer input:focus{border-color:var(--gold);}
+.api-drawer-label{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--text3);white-space:nowrap;}
+.api-drawer-save{background:var(--text);color:#fff;border:none;border-radius:4px;padding:7px 16px;font-family:'IBM Plex Sans',sans-serif;font-size:12px;font-weight:500;cursor:pointer;white-space:nowrap;}
+.api-drawer-close{background:none;border:none;color:var(--text3);cursor:pointer;font-size:18px;line-height:1;padding:0 4px;}
+.key-indicator{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:0.06em;padding:4px 10px;border-radius:3px;border:0.5px solid var(--border2);color:var(--text3);background:var(--bg3);cursor:pointer;display:flex;align-items:center;gap:5px;transition:all 0.15s;}
+.key-indicator:hover{border-color:var(--gold);color:var(--gold);}
+.key-indicator.active{border-color:var(--green-b);color:var(--green);background:var(--green-l);}
+.key-indicator .ki-dot{width:5px;height:5px;border-radius:50%;background:currentColor;}
+
+.council-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;margin-bottom:1.5rem;}
+.p-card{background:var(--bg2);border:0.5px solid var(--border);border-radius:8px;padding:10px 8px;text-align:center;transition:border-color 0.25s,background 0.25s;position:relative;overflow:hidden;}
+.p-card.speaking{border-color:var(--pc);background:var(--pb);}
+.p-card.speaking::after{content:'●';position:absolute;top:6px;right:7px;font-size:8px;color:var(--pc);animation:blink 1s infinite;}
+.p-av{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:500;margin:0 auto 7px;border:0.5px solid var(--border2);}
+.p-name{font-size:11px;font-weight:500;color:var(--text);margin-bottom:1px;line-height:1.2;}
+.p-role{font-size:9px;color:var(--text3);font-family:'IBM Plex Mono',monospace;margin-bottom:6px;line-height:1.3;}
+.p-stat{font-size:9px;font-family:'IBM Plex Mono',monospace;min-height:14px;}
+
+.asset-area{background:var(--bg2);border:0.5px solid var(--border2);border-radius:8px;padding:1rem 1.25rem;margin-bottom:1rem;}
+.asset-label{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--text3);margin-bottom:8px;display:block;}
+.asset-row{display:flex;gap:10px;align-items:stretch;}
+.asset-sel-wrap{flex:1;position:relative;}
+select{width:100%;background:var(--bg3);border:0.5px solid var(--border2);border-radius:6px;padding:10px 12px;font-family:'IBM Plex Sans',sans-serif;font-size:13px;color:var(--text);outline:none;cursor:pointer;appearance:none;}
+select:focus{border-color:var(--gold);}
+.custom-wrap{flex:1;display:none;}
+.custom-wrap.show{display:block;}
+textarea{width:100%;background:var(--bg3);border:0.5px solid var(--border2);border-radius:6px;padding:10px 12px;font-family:'IBM Plex Sans',sans-serif;font-size:13px;color:var(--text);outline:none;resize:vertical;min-height:60px;}
+textarea:focus{border-color:var(--gold);}
+.toggle-custom{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:0.06em;color:var(--gold);cursor:pointer;background:none;border:none;padding:0;margin-top:6px;display:block;text-decoration:underline;}
+.start-btn{background:var(--text);color:#fff;border:none;border-radius:6px;padding:10px 22px;font-family:'IBM Plex Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;white-space:nowrap;transition:background 0.15s,transform 0.1s;letter-spacing:0.01em;}
+.start-btn:hover{background:#2e2b24;}
+.start-btn:active{transform:scale(0.98);}
+.start-btn:disabled{opacity:0.35;cursor:not-allowed;transform:none;}
+
+.prog-track{height:2px;background:var(--border);border-radius:2px;margin-bottom:0.75rem;overflow:hidden;}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--gold),#c4942a);width:0%;transition:width 0.4s ease;}
+.stat-row{display:flex;justify-content:space-between;margin-bottom:0.75rem;}
+.stat-txt{font-size:11px;color:var(--text3);font-family:'IBM Plex Mono',monospace;letter-spacing:0.04em;}
+
+.panel{background:var(--bg2);border:0.5px solid var(--border);border-radius:8px;overflow:hidden;margin-bottom:1.25rem;}
+.panel-hd{padding:9px 16px;border-bottom:0.5px solid var(--border);background:var(--bg3);display:flex;align-items:center;justify-content:space-between;}
+.panel-lbl{font-size:10px;color:var(--text3);font-family:'IBM Plex Mono',monospace;letter-spacing:0.1em;text-transform:uppercase;}
+.round-lbl{font-size:10px;color:var(--text3);font-family:'IBM Plex Mono',monospace;}
+.feed{padding:16px;min-height:240px;max-height:420px;overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--border2) transparent;}
+.empty{display:flex;align-items:center;justify-content:center;height:180px;color:var(--text3);font-size:12px;font-family:'IBM Plex Mono',monospace;letter-spacing:0.06em;}
+
+.msg{display:flex;gap:10px;margin-bottom:1.1rem;animation:msgIn 0.3s ease forwards;opacity:0;}
+@keyframes msgIn{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
+.m-av{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'IBM Plex Mono',monospace;font-size:9px;font-weight:500;flex-shrink:0;margin-top:2px;border:0.5px solid var(--border2);}
+.m-body{flex:1;}
+.m-hd{display:flex;align-items:baseline;gap:7px;margin-bottom:4px;}
+.m-name{font-size:11px;font-weight:500;color:var(--text);}
+.m-role{font-size:9px;color:var(--text3);font-family:'IBM Plex Mono',monospace;}
+.m-time{font-size:9px;color:var(--text3);font-family:'IBM Plex Mono',monospace;margin-left:auto;}
+.m-txt{font-size:13px;color:var(--text2);line-height:1.65;background:var(--bg3);border-radius:3px 8px 8px 8px;padding:9px 13px;border:0.5px solid var(--border);}
+.m-txt.streaming::after{content:'▋';animation:cur 0.7s infinite;color:var(--gold);}
+@keyframes cur{0%,100%{opacity:1;}50%{opacity:0;}}
+.m-txt.certified{border-color:var(--green);color:var(--green);background:var(--green-l);}
+
+.verdict{background:var(--bg2);border-radius:8px;padding:1.5rem;animation:vIn 0.4s ease forwards;opacity:0;}
+@keyframes vIn{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+.v-ey{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:10px;display:flex;align-items:center;gap:8px;}
+.v-ey::before{content:'';display:inline-block;width:18px;height:1px;}
+.v-name{font-family:'Libre Baskerville',serif;font-size:20px;font-weight:400;color:var(--text);margin-bottom:3px;}
+.v-desc{font-size:12px;color:var(--text2);margin-bottom:12px;}
+.v-tier{display:flex;align-items:center;gap:12px;padding:11px 15px;border-radius:6px;margin-bottom:12px;}
+.v-tier-lbl{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:0.08em;text-transform:uppercase;color:var(--text3);}
+.v-tier-val{font-family:'Libre Baskerville',serif;font-size:20px;}
+.scores{display:grid;grid-template-columns:repeat(5,1fr);gap:7px;margin-bottom:12px;}
+.sc{background:var(--bg3);border:0.5px solid var(--border);border-radius:6px;padding:9px 7px;text-align:center;}
+.sc-d{font-size:8px;color:var(--text3);font-family:'IBM Plex Mono',monospace;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:4px;line-height:1.3;}
+.sc-n{font-family:'Libre Baskerville',serif;font-size:20px;line-height:1;}
+.sc-den{font-size:10px;color:var(--text3);}
+.v-cert{display:flex;flex-wrap:wrap;align-items:center;gap:7px;padding-top:12px;border-top:0.5px solid var(--border);}
+.v-cert-lbl{font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:0.08em;}
+.cert-pill{font-size:10px;font-family:'IBM Plex Mono',monospace;padding:3px 9px;border-radius:20px;background:var(--green-l);color:var(--green);border:0.5px solid var(--green-b);}
+.key-pts{margin-top:12px;padding-top:12px;border-top:0.5px solid var(--border);}
+.key-pts-lbl{font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px;}
+.key-pt{font-size:12px;color:var(--text2);padding:4px 0 4px 12px;border-left:2px solid var(--border2);margin-bottom:4px;line-height:1.5;}
+
+footer{text-align:center;font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--text3);letter-spacing:0.08em;margin-top:2.5rem;padding-top:1.5rem;border-top:0.5px solid var(--border);}
+
+@media(max-width:700px){.council-grid{grid-template-columns:repeat(4,1fr);}.scores{grid-template-columns:repeat(3,1fr);}.asset-row{flex-direction:column;}h1{font-size:22px;}}
 </style>
 </head>
 <body>
+<div class="paper-bg"></div>
+<div class="wrap">
 
-<div class="dot-bg"></div>
-
-<div class="container">
-
-  <header>
-    <div>
-      <p class="eyebrow">DayBlink Consulting</p>
-      <h1>Crown Jewels Council</h1>
-      <p class="header-sub">Autonomous stakeholder debate simulator — PG&E engagement</p>
-    </div>
-    <div class="badge live">Autonomous</div>
-  </header>
-
-  <div class="council-grid">
-    <div class="persona-card" id="card-moderator" style="--speaker-color: #5b3fa8; --speaker-bg: rgba(91,63,168,0.05);">
-      <div class="persona-avatar" style="background: rgba(91,63,168,0.08); color: #5b3fa8;">DB</div>
-      <p class="persona-name">Moderator</p>
-      <p class="persona-role">DayBlink / Facilitator</p>
-      <p class="persona-status" id="status-moderator" style="color: #5b3fa8;"></p>
-    </div>
-    <div class="persona-card" id="card-ciso" style="--speaker-color: #8a5010; --speaker-bg: rgba(138,80,16,0.05);">
-      <div class="persona-avatar" style="background: rgba(138,80,16,0.08); color: #8a5010;">MR</div>
-      <p class="persona-name">Maria Reyes</p>
-      <p class="persona-role">CISO</p>
-      <p class="persona-status" id="status-ciso" style="color: #8a5010;"></p>
-    </div>
-    <div class="persona-card" id="card-cio" style="--speaker-color: #185fa5; --speaker-bg: rgba(24,95,165,0.05);">
-      <div class="persona-avatar" style="background: rgba(24,95,165,0.08); color: #185fa5;">DC</div>
-      <p class="persona-name">David Chen</p>
-      <p class="persona-role">CIO</p>
-      <p class="persona-status" id="status-cio" style="color: #185fa5;"></p>
-    </div>
-    <div class="persona-card" id="card-grc" style="--speaker-color: #1a7a56; --speaker-bg: rgba(26,122,86,0.05);">
-      <div class="persona-avatar" style="background: rgba(26,122,86,0.08); color: #1a7a56;">VP</div>
-      <p class="persona-name">VP GRC</p>
-      <p class="persona-role">Governance & Risk</p>
-      <p class="persona-status" id="status-grc" style="color: #1a7a56;"></p>
-    </div>
+<header>
+  <div class="hd-left">
+    <p class="eyebrow">DayBlink Consulting — PG&E Engagement</p>
+    <h1>Crown Jewels Council</h1>
+    <p class="hd-sub">Autonomous AI stakeholder debate simulator — asset scoring &amp; certification</p>
   </div>
+  <div style="display:flex;align-items:center;gap:8px;">
+    <div class="key-indicator" id="keyIndicator" onclick="toggleDrawer()" title="Configure API key">
+      <span class="ki-dot"></span><span id="keyLabel">API key</span>
+    </div>
+    <div class="live-badge"><span class="live-dot"></span>AI Powered</div>
+  </div>
+</header>
 
-  <div class="controls-row">
-    <div class="asset-select-wrap">
-      <span class="asset-select-label">Asset</span>
+<!-- Hidden API key input — not visible to audience -->
+<input type="password" id="apiKeyInput" style="position:absolute;opacity:0;pointer-events:none;width:1px;height:1px;" />
+
+<!-- Slide-up drawer — triggered by secret key combo or indicator click -->
+<div class="api-drawer" id="apiDrawer">
+  <span class="api-drawer-label">API Key</span>
+  <input type="password" id="apiKeyVisible" placeholder="sk-ant-api..." autocomplete="off" />
+  <button class="api-drawer-save" onclick="saveKey()">Save &amp; Close</button>
+  <button class="api-drawer-close" onclick="closeDrawer()">✕</button>
+</div>
+
+<div class="council-grid" id="councilGrid">
+  <div class="p-card" id="card-moderator" style="--pc:#4a1a8b;--pb:var(--purple-l);">
+    <div class="p-av" style="background:var(--purple-l);color:var(--purple);">JT</div>
+    <p class="p-name">Jordan Tae</p>
+    <p class="p-role">Chief of Staff / Moderator</p>
+    <p class="p-stat" id="stat-moderator" style="color:var(--purple);"></p>
+  </div>
+  <div class="p-card" id="card-ciso" style="--pc:#8b1a1a;--pb:var(--red-l);">
+    <div class="p-av" style="background:var(--red-l);color:var(--red);">YE</div>
+    <p class="p-name">Yusuf Ezzy</p>
+    <p class="p-role">CISO</p>
+    <p class="p-stat" id="stat-ciso" style="color:var(--red);"></p>
+  </div>
+  <div class="p-card" id="card-cio" style="--pc:#1a3d8b;--pb:var(--blue-l);">
+    <div class="p-av" style="background:var(--blue-l);color:var(--blue);">DC</div>
+    <p class="p-name">David Chen</p>
+    <p class="p-role">CIO</p>
+    <p class="p-stat" id="stat-cio" style="color:var(--blue);"></p>
+  </div>
+  <div class="p-card" id="card-grc" style="--pc:#1a6b3a;--pb:var(--green-l);">
+    <div class="p-av" style="background:var(--green-l);color:var(--green);">VP</div>
+    <p class="p-name">VP GRC</p>
+    <p class="p-role">Governance &amp; Risk</p>
+    <p class="p-stat" id="stat-grc" style="color:var(--green);"></p>
+  </div>
+  <div class="p-card" id="card-cyberops" style="--pc:#8b4a0a;--pb:var(--amber-l);">
+    <div class="p-av" style="background:var(--amber-l);color:var(--amber);">VC</div>
+    <p class="p-name">VP Cyber Ops</p>
+    <p class="p-role">Cyber Operations</p>
+    <p class="p-stat" id="stat-cyberops" style="color:var(--amber);"></p>
+  </div>
+  <div class="p-card" id="card-techops" style="--pc:#0a6b6b;--pb:var(--teal-l);">
+    <div class="p-av" style="background:var(--teal-l);color:var(--teal);">HT</div>
+    <p class="p-name">Head Tech Ops</p>
+    <p class="p-role">Technology Operations</p>
+    <p class="p-stat" id="stat-techops" style="color:var(--teal);"></p>
+  </div>
+  <div class="p-card" id="card-secarch" style="--pc:#4a1a8b;--pb:var(--purple-l);">
+    <div class="p-av" style="background:var(--purple-l);color:var(--purple);">SA</div>
+    <p class="p-name">VP Sec Arch</p>
+    <p class="p-role">Security Architecture</p>
+    <p class="p-stat" id="stat-secarch" style="color:var(--purple);"></p>
+  </div>
+</div>
+
+<div class="asset-area">
+  <span class="asset-label">Asset to score</span>
+  <div class="asset-row">
+    <div class="asset-sel-wrap" id="selWrap">
       <select id="assetSelect">
         <option value="scada">SCADA Control Systems — Grid Operations</option>
         <option value="cmdb">ServiceNow CMDB — Configuration Management Database</option>
-        <option value="iam">Identity & Access Management (IAM) Platform</option>
-        <option value="ot">IT Service Desk Portal — ServiceNow Ticketing</option>
-        <option value="billing">Enterprise SharePoint Intranet — Internal Collaboration</option>
+        <option value="iam">Identity &amp; Access Management (IAM) Platform</option>
+        <option value="sharepoint">Enterprise SharePoint Intranet</option>
+        <option value="servicedesk">IT Service Desk Portal</option>
+        <option value="custom">— Enter custom asset —</option>
       </select>
+    </div>
+    <div class="custom-wrap" id="customWrap">
+      <textarea id="customAsset" placeholder="Describe the asset: name, type, what data it holds, who owns it, any regulatory flags..."></textarea>
     </div>
     <button class="start-btn" id="startBtn" onclick="startDebate()">Start debate</button>
   </div>
+  <button class="toggle-custom" id="toggleCustom" onclick="toggleCustom()">+ Enter a custom asset instead</button>
+</div>
 
-  <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+<div class="prog-track"><div class="prog-fill" id="progFill"></div></div>
+<div class="stat-row">
+  <span class="stat-txt" id="statTxt">Paste your API key above and select an asset to begin</span>
+  <span class="stat-txt" id="roundTxt"></span>
+</div>
 
-  <div class="status-row">
-    <span class="status-text" id="statusText">Select an asset and start the debate</span>
-    <span class="round-count" id="roundCount"></span>
+<div class="panel">
+  <div class="panel-hd">
+    <span class="panel-lbl">Live transcript</span>
+    <span class="round-lbl" id="roundLbl"></span>
   </div>
-
-  <div class="debate-panel">
-    <div class="debate-panel-header">
-      <span class="panel-label">Live transcript</span>
-    </div>
-    <div class="debate-feed" id="debateFeed">
-      <div class="debate-empty" id="emptyState">— awaiting session start —</div>
-    </div>
+  <div class="feed" id="feed">
+    <div class="empty" id="emptyState">— awaiting session start —</div>
   </div>
+</div>
 
-  <div id="verdictArea"></div>
+<div id="verdictArea"></div>
 
-  <div class="divider"></div>
-  <footer>PG&E Crown Jewels Assessment &nbsp;·&nbsp; DayBlink Consulting &nbsp;·&nbsp; Confidential</footer>
-
+<footer>PG&amp;E Crown Jewels Assessment &nbsp;·&nbsp; DayBlink Consulting &nbsp;·&nbsp; Confidential &nbsp;·&nbsp; Fictional engagement for internal use only</footer>
 </div>
 
 <script>
-const ASSETS = {
-  scada: {
-    name: "SCADA Control Systems",
-    desc: "Supervisory control of the electrical grid. Direct physical infrastructure control.",
-    debate: [
-      { speaker: "moderator", text: "Council, we're scoring SCADA Control Systems — direct supervisory control of PG&E's electrical grid infrastructure. This is our highest-stakes asset. Maria, please open the scoring." },
-      { speaker: "ciso", text: "Crown Jewel, no question. Confidentiality 5/5 — the control logic is a blueprint for a physical attack. Integrity 5/5 — a tampered command could cause real-world equipment damage. This is the asset that keeps the lights on for 16 million Californians." },
-      { speaker: "cio", text: "Availability 5/5 from me — SCADA going down is a grid outage, full stop. I agree on Crown Jewel. My only question is whether our existing CIP controls are being consistently applied given the air-gap architecture." },
-      { speaker: "grc", text: "NERC CIP-007 and CIP-010 apply directly here. These are our highest-tier BES Cyber Systems by definition. Crown Jewels designation formalizes the prioritization framework. Regulatory exposure 5/5." },
-      { speaker: "ciso", text: "David raises a good point on the air gap — it helps but doesn't eliminate risk. The 2021 Oldsmar water treatment attack came through a remote access tool, not a direct network breach. We need Crown Jewel controls specifically on remote access to SCADA." },
-      { speaker: "cio", text: "Agreed. Enhanced remote access controls as a required Crown Jewel control alongside existing CIP requirements. That's a documented action item from this session. I can certify this classification." },
-      { speaker: "grc", text: "Remote access controls noted for the runbook. I can certify this classification." },
-      { speaker: "ciso", text: "I can certify this classification." },
-      { speaker: "moderator", text: "Unanimous Crown Jewel designation. SCADA designated highest-priority. Required controls: existing NERC CIP-007/010 plus enhanced remote access controls. Session certified." }
-    ],
-    verdict: { tier: "Crown Jewel", scores: { conf: 5, integ: 5, avail: 5, impact: 5, reg: 5 } }
+const PERSONAS = {
+  moderator: {
+    name:'Jordan Tae', role:'Chief of Staff / Moderator', initials:'JT',
+    color:'var(--purple)', bg:'var(--purple-l)', cardId:'card-moderator',
+    model:'claude-sonnet-4-20250514',
+    system:`You are Jordan Tae, Chief of Staff to the CISO at Pacific Gas & Electric (PG&E), serving as the facilitator for this Crown Jewels Council scoring session.
+
+BACKGROUND: You are transparent, reliable, and highly organized. You were described by DayBlink as someone who "will flag when the CISO's eyes are needed rather than let things sit." You are trusted by both the security team and the DayBlink consultants. You do not have your own scoring agenda — your job is to run a rigorous, fair session that produces a defensible, documented result.
+
+YOUR ROLE IN THIS SESSION:
+- Open the session by introducing the asset and providing context
+- Call on each council member to present their scores and reasoning
+- Surface disagreements and push the group to resolve them explicitly — do not let tension get papered over
+- Ask follow-up questions when reasoning is vague
+- Track who has and has not certified
+- Close only when ALL members have said the exact phrase "I can certify this classification"
+- Produce a final structured summary
+
+CLOSING SUMMARY FORMAT (use exactly when all have certified):
+===VERDICT===
+ASSET: [name]
+FINAL TIER: [Crown Jewel / High / Moderate / Low]
+SCORES: Confidentiality [X]/5 | Integrity [X]/5 | Availability [X]/5 | Business Impact [X]/5 | Regulatory [X]/5
+KEY POINTS:
+- [point 1]
+- [point 2]  
+- [point 3]
+CERTIFIED BY: Yusuf Ezzy, David Chen, VP GRC, VP Cyber Ops, Head Tech Ops, VP Security Architecture
+===END===
+
+You do NOT score assets yourself. You facilitate, probe disagreements, and close.`
   },
-  cmdb: {
-    name: "ServiceNow CMDB",
-    desc: "Primary IT asset inventory. 18 months stale. Involved in Q3 2025 breach.",
-    debate: [
-      { speaker: "moderator", text: "We're scoring the ServiceNow CMDB — PG&E's primary IT asset inventory system. This was at the center of our Q3 2025 incident: 47 days of unauthorized access to network topology data. Maria, your opening position." },
-      { speaker: "ciso", text: "Crown Jewel. Confidentiality 5/5 — this system handed attackers a complete map of our network. Integrity 5/5 — stale records delayed our incident response by 11 days. We cannot underrate this." },
-      { speaker: "cio", text: "I'd push back on Availability being a 5. This system has been 18 months stale and we've been operating. I'd score it 4/5. Crown Jewel may be right — but I want the rationale to be precise, not reflexive." },
-      { speaker: "grc", text: "NERC CIP requires documented asset inventory for all BES Cyber Systems. Regulatory Exposure is 5/5. A Q4 audit without a defensible CMDB is a repeat of our 2020 violation. $2.7M we cannot afford again." },
-      { speaker: "ciso", text: "David, availability isn't why I'm scoring this Crown Jewel. It's the confidentiality of what's inside. A threat actor with our full topology map can move laterally undetected for months — exactly what happened in Q3." },
-      { speaker: "cio", text: "That argument holds. Crown Jewel if we document it's the data sensitivity driving the designation, not system availability. That distinction matters for how we resource the protection program." },
-      { speaker: "grc", text: "Rationale documented: confidentiality of network topology and NERC CIP compliance. I can certify this classification." },
-      { speaker: "ciso", text: "I can certify this classification." },
-      { speaker: "cio", text: "With that documented rationale, I can certify this classification." },
-      { speaker: "moderator", text: "Council certified. CMDB designated Crown Jewel. Primary drivers: confidentiality of network topology data and NERC CIP compliance obligations. Rationale on record." }
-    ],
-    verdict: { tier: "Crown Jewel", scores: { conf: 5, integ: 5, avail: 4, impact: 5, reg: 5 } }
+  ciso: {
+    name:'Yusuf Ezzy', role:'CISO', initials:'YE',
+    color:'var(--red)', bg:'var(--red-l)', cardId:'card-ciso',
+    model:'claude-sonnet-4-20250514',
+    system:`You are Yusuf Ezzy, Chief Information Security Officer at Pacific Gas & Electric (PG&E).
+
+BACKGROUND: You lead all cybersecurity programs across PG&E's enterprise IT and OT environments. A Q3 2025 incident in which a configuration management server was compromised for 47 days — exposing network topology maps, architecture docs, and privileged credential stores — happened on your watch. You take that personally. You were brought in to build a mature security program and this assessment is a direct response to that failure. You have a reputation for being direct and evidence-driven. You are cautious about third-party access and deeply sensitized to CMDB integrity issues.
+
+SCORING PRIORITIES:
+- You weight CONFIDENTIALITY and EXPOSURE risk highest
+- Assets that could enable lateral movement, privilege escalation, or network reconnaissance are your primary concern
+- Stale or incomplete asset records are a trigger for you given the incident
+- You push back firmly when business owners undervalue security risk
+- You cite NERC CIP, NERC CIP-005, CIP-007, CIP-010 compliance obligations when relevant
+
+PERSONALITY: Direct, occasionally defensive about the Q3 incident, evidence-driven. You respect David Chen (CIO) but believe he sometimes prioritizes uptime over security. You are skeptical of the Head of Tech Ops who is protective of their turf. You are building a relationship with VP Cyber Ops who is new to the role.
+
+DEBATE STYLE: You open with a clear position and specific scores. You push back with specific technical arguments. You are willing to be persuaded but only by substantive reasoning, not political pressure. You sometimes reference the Q3 incident when making risk arguments.
+
+SCORING: Use the scale 1-5 on: Confidentiality, Integrity, Availability, Business Impact, Regulatory Exposure. Tiers: Crown Jewel (avg 4.5+), High (avg 3.5-4.4), Moderate (avg 2.5-3.4), Low (below 2.5).
+
+When you agree with the final classification, say exactly: "I can certify this classification."`
   },
-  iam: {
-    name: "Identity & Access Management Platform",
-    desc: "Authentication and authorization for all enterprise systems. Controls all privileged access.",
-    debate: [
-      { speaker: "moderator", text: "Today we're scoring the IAM Platform — the system that controls who gets access to everything else at PG&E. This is foundational to our entire security architecture. Maria, please open." },
-      { speaker: "ciso", text: "Crown Jewel. This is the master key to every system we own. Confidentiality 5/5 — compromise here means compromise everywhere. Integrity 5/5 — if access records are tampered with, we have no audit trail." },
-      { speaker: "cio", text: "Agreed on Crown Jewel. If IAM goes down, nobody can authenticate to any system. Availability is a 5 here — this is one of the rare cases where I'm fully aligned with Maria across all dimensions." },
-      { speaker: "grc", text: "SOX IT general controls and NERC CIP both require access management documentation and review. IAM is the system of record for compliance. Regulatory exposure 5/5. Full alignment across the council." },
-      { speaker: "ciso", text: "The debate here isn't the designation — it's the controls. PAM, MFA enforcement, and session recording need to be explicitly required as Crown Jewel controls for this asset specifically." },
-      { speaker: "cio", text: "Agreed. PAM, MFA enforcement, and session recording as mandatory Crown Jewel controls for IAM. Goes into the runbook. I can certify this classification." },
-      { speaker: "grc", text: "Controls documented. I can certify this classification." },
-      { speaker: "ciso", text: "I can certify this classification." },
-      { speaker: "moderator", text: "Full council consensus — fastest certification this session. IAM Platform designated Crown Jewel unanimously. Mandatory controls on record: PAM, MFA enforcement, session recording." }
-    ],
-    verdict: { tier: "Crown Jewel", scores: { conf: 5, integ: 5, avail: 5, impact: 5, reg: 5 } }
+  cio: {
+    name:'David Chen', role:'CIO', initials:'DC',
+    color:'var(--blue)', bg:'var(--blue-l)', cardId:'card-cio',
+    model:'claude-sonnet-4-20250514',
+    system:`You are David Chen, Chief Information Officer at Pacific Gas & Electric (PG&E).
+
+BACKGROUND: You are the executive sponsor of the Crown Jewels Assessment and control both the IT and cybersecurity budget. You have overseen PG&E's enterprise technology strategy through a major financial recovery and now manage a $63B+ capital plan with significant IT demands. You approved this engagement because the CMDB is acknowledged as incomplete and stale. You have a prior NERC CIP violation history — a $2.7M fine in 2020 — and will not risk a repeat.
+
+SCORING PRIORITIES:
+- You weight AVAILABILITY and BUSINESS CONTINUITY highest
+- Assets that would disrupt grid operations, billing, or customer service if compromised are your primary concern
+- You push for precision and evidence — Crown Jewels designations drive security spend, so you require justification
+- You are sensitive to regulatory risk after prior violations
+- You ask "what would actually happen if this went down?" before accepting a Crown Jewel designation
+
+PERSONALITY: Strategic, calm, financially oriented. You respect Yusuf Ezzy but think he sometimes overweights theoretical attack paths vs. operational reality. You have final budget authority. You are pragmatic and want designations that drive real protective action, not designations made out of caution.
+
+DEBATE STYLE: You challenge assumptions about impact. You ask clarifying questions about what the actual harm scenario is. You sometimes push back on Crown Jewel designations with "what's the real downtime impact?" You can be persuaded by strong business continuity or regulatory arguments.
+
+SCORING: Use the scale 1-5 on: Confidentiality, Integrity, Availability, Business Impact, Regulatory Exposure.
+
+When you agree with the final classification, say exactly: "I can certify this classification."`
   },
-  ot: {
-    name: "IT Service Desk Portal (ServiceNow)",
-    desc: "Employee IT support ticketing system. Contains internal request history and some user PII. No OT or grid connectivity.",
-    debate: [
-      { speaker: "moderator", text: "We're scoring the IT Service Desk Portal — the internal ticketing system used for employee IT support requests. Maria, what's your initial position?" },
-      { speaker: "ciso", text: "I'd open at Moderate. Confidentiality 3/5 — there's some PII in ticket records but nothing operationally sensitive. Integrity 2/5 — ticket tampering has minimal security impact. This isn't keeping me up at night." },
-      { speaker: "cio", text: "Availability 3/5 — if this goes down, employees open tickets by email. Annoying, not catastrophic. I'm at Moderate as well. Business impact is real but manageable. I don't see a path to High from an operations standpoint." },
-      { speaker: "grc", text: "I want to push back slightly. Ticket records contain employee names, contact info, and device details — that's PII under CCPA. Regulatory exposure is 3/5, not 2. I'd argue for High rather than Moderate based on the PII volume alone." },
-      { speaker: "ciso", text: "I hear the CCPA argument but the PII here is low-sensitivity — names and IT device types, not financial or health data. A breach is reportable but the harm potential is limited. I'm holding at Moderate." },
-      { speaker: "cio", text: "Agreed with Maria. The CCPA exposure is real but doesn't change the operational calculus. Moderate with a note to ensure PII retention policies are enforced. That's the right proportionate response." },
-      { speaker: "grc", text: "Fair point on proportionality. I'll accept Moderate if we document the PII retention control as a required action. I can certify this classification." },
-      { speaker: "ciso", text: "I can certify this classification." },
-      { speaker: "cio", text: "I can certify this classification." },
-      { speaker: "moderator", text: "Council certified. IT Service Desk Portal designated Moderate. Required action: PII retention policy enforcement. Council agreed this asset does not warrant elevated Crown Jewels protections." }
-    ],
-    verdict: { tier: "Moderate", scores: { conf: 3, integ: 2, avail: 3, impact: 2, reg: 3 } }
+  grc: {
+    name:'VP GRC', role:'Governance, Risk & Compliance', initials:'VP',
+    color:'var(--green)', bg:'var(--green-l)', cardId:'card-grc',
+    model:'claude-sonnet-4-20250514',
+    system:`You are the VP of Governance, Risk & Compliance (GRC) at Pacific Gas & Electric (PG&E).
+
+BACKGROUND: You manage PG&E's compliance obligations including NERC CIP (CIP-002 through CIP-014), CPUC requirements, and SOX-adjacent IT controls. A Q4 NERC CIP review is approaching, and the Crown Jewels Assessment outputs will directly inform and accelerate your compliance cycle. PG&E has prior violation history — a $2.7M fine in 2020 for a 2016 asset database exposure incident — and you are determined not to repeat it. You see this assessment as a compliance infrastructure investment.
+
+SCORING PRIORITIES:
+- You weight REGULATORY EXPOSURE highest
+- Any asset in scope of NERC CIP, CPUC, or SOX gets elevated attention from you
+- You are process-oriented — you want scoring decisions to be defensible and documented for auditors
+- You will escalate to Crown Jewel status if regulatory exposure is high, even if business impact seems moderate
+- You care about auditability: "can we show a regulator why we made this call?"
+
+PERSONALITY: Methodical, compliance-focused, sometimes perceived as overly cautious by the CIO. You cite specific regulatory frameworks (NERC CIP-005, CIP-007, CIP-010, CCPA, CPUC) and past violations. You push for documentation on every scoring decision.
+
+DEBATE STYLE: You lead with regulatory exposure arguments. You ask "what framework applies here?" You support designations that create an auditable paper trail. You sometimes frustrate the CIO by pushing classifications up on regulatory grounds alone.
+
+SCORING: Use the scale 1-5 on: Confidentiality, Integrity, Availability, Business Impact, Regulatory Exposure.
+
+When you agree with the final classification, say exactly: "I can certify this classification."`
   },
-  billing: {
-    name: "Enterprise SharePoint Intranet",
-    desc: "Internal document sharing and collaboration platform. Hosts HR policies, project docs, and internal communications.",
-    debate: [
-      { speaker: "moderator", text: "We're scoring the Enterprise SharePoint Intranet — PG&E's internal collaboration and document platform. This hosts HR policies, project documentation, and internal communications. Maria, your opening." },
-      { speaker: "ciso", text: "I'm opening at High. Confidentiality 4/5 — SharePoint hosts a significant volume of sensitive internal documents including project plans, org charts, and strategic communications. A breach here could expose material non-public information." },
-      { speaker: "cio", text: "I'd push back to Moderate. Availability 2/5 — if SharePoint goes down we use email and Teams. Business impact is low. I understand the confidentiality concern but I don't think it reaches High without more specific evidence of sensitive document exposure." },
-      { speaker: "grc", text: "There's a SOX angle here — SharePoint hosts financial planning documents and board communications that could be material under securities regulations. Regulatory exposure is 3/5. I'm between Moderate and High depending on what's actually stored there." },
-      { speaker: "ciso", text: "David, the availability point is fair — but the risk isn't downtime, it's data exfiltration. If an attacker gets persistent access to SharePoint they can harvest months of strategic communications silently. That's a High risk even if availability is low." },
-      { speaker: "cio", text: "That's a reasonable exfiltration argument. I'll move to High if we scope it to document sensitivity controls — specifically restricting access to strategic and financial documents within SharePoint rather than treating the whole platform as High." },
-      { speaker: "grc", text: "Scoped High with access controls on sensitive document libraries. That's a defensible and proportionate position. I can certify this classification." },
-      { speaker: "ciso", text: "Agreed on the scoped approach. I can certify this classification." },
-      { speaker: "cio", text: "With the access control scope documented, I can certify this classification." },
-      { speaker: "moderator", text: "Council certified. SharePoint Intranet designated High — scoped to sensitive document libraries. Required control: access restriction on strategic and financial document libraries. Full platform not elevated to Crown Jewel." }
-    ],
-    verdict: { tier: "High", scores: { conf: 4, integ: 3, avail: 2, impact: 3, reg: 3 } }
+  cyberops: {
+    name:'VP Cyber Ops', role:'Cyber Operations & Defense', initials:'VC',
+    color:'var(--amber)', bg:'var(--amber-l)', cardId:'card-cyberops',
+    model:'claude-sonnet-4-20250514',
+    system:`You are the VP of Cyber Operations & Defense at Pacific Gas & Electric (PG&E).
+
+BACKGROUND: You took over this role approximately 2 months after the Q3 2025 configuration management server incident. Your predecessor left, taking significant institutional knowledge with them. You inherited a team still processing the breach and a monitoring infrastructure that had obvious gaps — the 47-day dwell time made that painfully clear. You are still getting up to speed on which assets your SOC actually monitors versus which ones matter most to the business.
+
+SCORING PRIORITIES:
+- You weight DETECTABILITY and ATTACK SURFACE exposure highly
+- Assets where your team has monitoring gaps concern you more than assets that are well-covered
+- You are honest about uncertainty — you flag when you don't have enough visibility to score confidently
+- You lean toward higher ratings when uncertain, given your recent history
+- You focus on threat actor behavior: "what would an attacker do with this?"
+
+PERSONALITY: Earnest, slightly cautious, acutely aware of your own knowledge gaps. You bring operational ground-truth from the SOC. You sometimes defer to Yusuf Ezzy on policy but push back when operational reality contradicts the theory. You are building credibility in this new role.
+
+DEBATE STYLE: You bring specific operational observations — "we have a gap on this" or "we can detect this activity." You flag when you don't know. You ask "what does our threat intel say about how this type of asset gets targeted?" You occasionally reference the Q3 dwell time as a cautionary example.
+
+SCORING: Use the scale 1-5 on: Confidentiality, Integrity, Availability, Business Impact, Regulatory Exposure.
+
+When you agree with the final classification, say exactly: "I can certify this classification."`
+  },
+  techops: {
+    name:'Head Tech Ops', role:'Technology Operations', initials:'HT',
+    color:'var(--teal)', bg:'var(--teal-l)', cardId:'card-techops',
+    model:'claude-sonnet-4-20250514',
+    system:`You are the Head of Technology Operations at Pacific Gas & Electric (PG&E).
+
+BACKGROUND: You own the ServiceNow CMDB — the primary IT asset inventory that is currently approximately 18 months stale. You are protective of your team and your systems. You have significant scar tissue from past audit engagements where your team was blamed for incomplete data. You are on the "watch list" in the DayBlink stakeholder map — described as protective of turf and needing to "feel consulted, not assessed." You are not a natural ally of this process but you have been brought into the Crown Jewels Council because your team owns critical asset data.
+
+SCORING PRIORITIES:
+- You weight operational complexity and SYSTEM INTERDEPENDENCY highly
+- You focus on what would actually break in the infrastructure if an asset went down
+- You are skeptical of security-driven classifications that you feel don't account for operational reality
+- You have detailed knowledge of how systems are actually connected vs. how they appear on paper
+- You push back on classifications that you think will create unrealistic operational burdens for your team
+
+PERSONALITY: Pragmatic, slightly defensive, occasionally territorial. You have more operational knowledge than anyone in the room but you sometimes feel like the security team doesn't respect it. You are more cooperative when you feel your expertise is being genuinely valued. You occasionally make comments that reveal frustration with past audit experiences.
+
+DEBATE STYLE: You bring specific operational detail about system dependencies and actual usage patterns. You push back on theoretical risk scenarios with "in practice, here's what actually happens." You sometimes resist high classifications on assets your team owns. You can be won over by arguments that acknowledge operational complexity.
+
+SCORING: Use the scale 1-5 on: Confidentiality, Integrity, Availability, Business Impact, Regulatory Exposure.
+
+When you agree with the final classification, say exactly: "I can certify this classification."`
+  },
+  secarch: {
+    name:'VP Sec Arch', role:'Security Architecture', initials:'SA',
+    color:'var(--purple)', bg:'var(--purple-l)', cardId:'card-secarch',
+    model:'claude-sonnet-4-20250514',
+    system:`You are the VP of Security Architecture & Engineering at Pacific Gas & Electric (PG&E).
+
+BACKGROUND: You maintain what the DayBlink team has described as "the most trusted asset list within the cyber organization" — but your list is narrower than full business-critical scope. It reflects what you monitor rather than what actually matters to the business. You have deep technical knowledge of PG&E's security architecture, threat landscape, and how systems interact. You are a key methodology input for the Crown Jewels program.
+
+SCORING PRIORITIES:
+- You weight TECHNICAL ATTACK SURFACE and ARCHITECTURE RISK highly
+- You think about how assets fit into the broader security architecture — what they connect to, what they enable, what they expose
+- You bring specific knowledge about known vulnerabilities, attack paths, and threat actor techniques relevant to utility environments
+- You distinguish between what your team currently monitors and what actually needs protection
+- You sometimes surface architecture risks that others haven't considered
+
+PERSONALITY: Technical, precise, occasionally understated. You are respected for your expertise but sometimes perceived as too narrow in your focus (cyber risk vs. business risk). You work closely with Yusuf Ezzy and generally align with CISO priorities but you bring independent technical judgment.
+
+DEBATE STYLE: You contribute specific technical arguments about attack paths, architecture dependencies, and threat intelligence. You sometimes correct misunderstandings about how systems actually work technically. You ask "what does the attack path look like from this asset?" You bring precision to vague risk claims.
+
+SCORING: Use the scale 1-5 on: Confidentiality, Integrity, Availability, Business Impact, Regulatory Exposure.
+
+When you agree with the final classification, say exactly: "I can certify this classification."`
   }
 };
 
-const SPEAKERS = {
-  moderator: { name: "Moderator", role: "DayBlink", initials: "DB", color: "#5b3fa8", bg: "rgba(91,63,168,0.08)", cardId: "card-moderator" },
-  ciso:      { name: "Maria Reyes", role: "CISO", initials: "MR", color: "#8a5010", bg: "rgba(138,80,16,0.08)", cardId: "card-ciso" },
-  cio:       { name: "David Chen", role: "CIO", initials: "DC", color: "#185fa5", bg: "rgba(24,95,165,0.08)", cardId: "card-cio" },
-  grc:       { name: "VP GRC", role: "Governance", initials: "VP", color: "#1a7a56", bg: "rgba(26,122,86,0.08)", cardId: "card-grc" }
+const ASSETS = {
+  scada:{name:'SCADA Control Systems',desc:'Supervisory control systems for electrical grid operations. Direct control of physical infrastructure. Partial air-gap from IT network. NERC CIP BES Cyber System.'},
+  cmdb:{name:'ServiceNow CMDB',desc:"PG&E's primary IT asset inventory system. Contains IP addresses, server hostnames, MAC addresses, OS versions, dependency maps, and network topology for all enterprise IT assets. Currently ~18 months stale. Involved in Q3 2025 breach."},
+  iam:{name:'Identity & Access Management Platform',desc:'Enterprise IAM system managing authentication and authorization for all IT and OT systems. Controls privileged access. Includes PAM capabilities. SOX and NERC CIP scope.'},
+  sharepoint:{name:'Enterprise SharePoint Intranet',desc:'Internal collaboration and document management platform. Hosts HR policies, project documentation, strategic planning documents, and internal communications. Some financial planning materials in scope of SOX review.'},
+  servicedesk:{name:'IT Service Desk Portal',desc:'Employee IT support ticketing system built on ServiceNow. Contains internal request history, device assignments, user PII (names, contact info, device details). No OT or grid connectivity.'}
 };
 
-let running = false, timers = [];
-function clearTimers() { timers.forEach(clearTimeout); timers = []; }
-function setProgress(p) { document.getElementById('progressFill').style.width = p + '%'; }
-function setStatus(t) { document.getElementById('statusText').textContent = t; }
-function setRound(t) { document.getElementById('roundCount').textContent = t; }
+let messages=[], certifications=new Set(), roundCount=0, isRunning=false, timers=[];
 
-function setSpeaking(id) {
-  Object.keys(SPEAKERS).forEach(k => {
-    document.getElementById(SPEAKERS[k].cardId).classList.toggle('speaking', k === id);
+function getApiKey(){return document.getElementById('apiKeyInput').value.trim();}
+
+function toggleDrawer(){
+  const d=document.getElementById('apiDrawer');
+  d.classList.toggle('open');
+  if(d.classList.contains('open')){
+    document.getElementById('apiKeyVisible').focus();
+  }
+}
+
+function closeDrawer(){
+  document.getElementById('apiDrawer').classList.remove('open');
+}
+
+function saveKey(){
+  const val=document.getElementById('apiKeyVisible').value.trim();
+  document.getElementById('apiKeyInput').value=val;
+  const ind=document.getElementById('keyIndicator');
+  const lbl=document.getElementById('keyLabel');
+  if(val){
+    ind.classList.add('active');
+    lbl.textContent='Key set';
+  } else {
+    ind.classList.remove('active');
+    lbl.textContent='API key';
+  }
+  closeDrawer();
+}
+
+// Secret keyboard shortcut: press backtick ` to open the key drawer
+document.addEventListener('keydown',function(e){
+  if(e.key==='`' && !e.ctrlKey && !e.metaKey){
+    e.preventDefault();
+    toggleDrawer();
+  }
+});
+
+function clearTimers(){timers.forEach(clearTimeout);timers=[];}
+
+function setProgress(p){document.getElementById('progFill').style.width=p+'%';}
+function setStatus(t){document.getElementById('statTxt').textContent=t;}
+function setRound(t){document.getElementById('roundTxt').textContent=t;document.getElementById('roundLbl').textContent=t;}
+
+function setSpeaking(id){
+  Object.keys(PERSONAS).forEach(k=>{
+    const el=document.getElementById(PERSONAS[k].cardId);
+    if(el)el.classList.toggle('speaking',k===id);
   });
 }
 
-function setPersonaStatus(id, text) {
-  const el = document.getElementById('status-' + id);
-  if (el) el.textContent = text;
+function setPersonaStat(id,txt){
+  const el=document.getElementById('stat-'+id);
+  if(el)el.textContent=txt;
 }
 
-function addMessage(speakerId, text) {
-  const feed = document.getElementById('debateFeed');
-  const empty = document.getElementById('emptyState');
-  if (empty) empty.remove();
-  const s = SPEAKERS[speakerId];
-  const certified = text.includes('certify');
-  const div = document.createElement('div');
-  div.className = 'message';
-  div.innerHTML = `<div class="msg-avatar" style="background:${s.bg};color:${s.color};">${s.initials}</div><div class="msg-body"><div class="msg-header"><span class="msg-name">${s.name}</span><span class="msg-role">${s.role}</span></div><p class="msg-text${certified?' certified':''}">${text}</p></div>`;
+function addMessage(speakerId,text,streaming=false){
+  const feed=document.getElementById('feed');
+  const empty=document.getElementById('emptyState');
+  if(empty)empty.remove();
+  const p=PERSONAS[speakerId];
+  const certified=text.includes('certify this classification');
+  const now=new Date().toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'});
+  const div=document.createElement('div');
+  div.className='msg';
+  div.id='msg-'+Date.now();
+  div.innerHTML=`<div class="m-av" style="background:${p.bg};color:${p.color};">${p.initials}</div>
+    <div class="m-body">
+      <div class="m-hd"><span class="m-name">${p.name}</span><span class="m-role">${p.role}</span><span class="m-time">${now}</span></div>
+      <p class="m-txt${streaming?' streaming':''}${certified?' certified':''}">${text}</p>
+    </div>`;
   feed.appendChild(div);
-  feed.scrollTop = feed.scrollHeight;
+  feed.scrollTop=feed.scrollHeight;
+  return div;
 }
 
-function showVerdict(asset) {
-  const v = asset.verdict, s = v.scores;
-  const tierIcon = v.tier === 'Crown Jewel' ? '👑' : v.tier === 'High' ? '⚠️' : '●';
-  const tierColor = v.tier === 'Crown Jewel' ? 'var(--gold)' : v.tier === 'High' ? '#c0392b' : '#185fa5';
-  const tierBg = v.tier === 'Crown Jewel' ? 'var(--gold-bg)' : v.tier === 'High' ? 'rgba(192,57,43,0.07)' : 'rgba(24,95,165,0.07)';
-  const tierBorder = v.tier === 'Crown Jewel' ? 'rgba(154,111,30,0.2)' : v.tier === 'High' ? 'rgba(192,57,43,0.2)' : 'rgba(24,95,165,0.2)';
-  document.getElementById('verdictArea').innerHTML = `<div class="verdict-card" style="border-color:${tierColor};"><p class="verdict-eyebrow" style="color:${tierColor};">Council verdict</p><p class="verdict-asset-name">${asset.name}</p><p style="font-size:13px;color:var(--text2);margin-bottom:4px;">${asset.desc}</p><div class="verdict-tier-row" style="background:${tierBg};border-color:${tierBorder};"><span class="verdict-tier-label">Final designation</span><span class="verdict-tier-value" style="color:${tierColor};">${tierIcon} ${v.tier}</span></div><div class="scores-row"><div class="score-cell"><p class="score-dim">Confidentiality</p><p class="score-num">${s.conf}<span class="score-denom">/5</span></p></div><div class="score-cell"><p class="score-dim">Integrity</p><p class="score-num">${s.integ}<span class="score-denom">/5</span></p></div><div class="score-cell"><p class="score-dim">Availability</p><p class="score-num">${s.avail}<span class="score-denom">/5</span></p></div><div class="score-cell"><p class="score-dim">Business impact</p><p class="score-num">${s.impact}<span class="score-denom">/5</span></p></div><div class="score-cell"><p class="score-dim">Regulatory</p><p class="score-num">${s.reg}<span class="score-denom">/5</span></p></div></div><div class="certified-row"><span class="certified-label">Certified by</span><span class="certified-badge">Maria Reyes · CISO</span><span class="certified-badge">David Chen · CIO</span><span class="certified-badge">VP GRC</span><span class="certified-badge">DayBlink Moderator</span></div></div>`;
+function updateMessage(div,text,done=false){
+  const p=div.querySelector('.m-txt');
+  if(!p)return;
+  const certified=text.includes('certify this classification');
+  p.textContent=text;
+  p.className='m-txt'+(done?'':' streaming')+(certified?' certified':'');
+  div.closest('.feed').scrollTop=99999;
 }
 
-function startDebate() {
-  if (running) return;
-  clearTimers(); running = true;
-  const key = document.getElementById('assetSelect').value;
-  const asset = ASSETS[key];
-  document.getElementById('startBtn').disabled = true;
-  document.getElementById('verdictArea').innerHTML = '';
-  document.getElementById('debateFeed').innerHTML = '<div class="debate-empty" id="emptyState">— initializing session —</div>';
-  Object.keys(SPEAKERS).forEach(k => setPersonaStatus(k, ''));
-  setProgress(0); setSpeaking(null); setRound('');
-  const msgs = asset.debate;
-  msgs.forEach((m, i) => {
-    const t = setTimeout(() => {
-      setSpeaking(m.speaker);
-      setStatus(SPEAKERS[m.speaker].name + ' is speaking...');
-      setRound('Round ' + (i+1) + ' of ' + msgs.length);
-      addMessage(m.speaker, m.text);
-      setProgress(Math.round(((i+1)/msgs.length)*88));
-      if (m.text.includes('certify') && m.speaker !== 'moderator') setPersonaStatus(m.speaker, '✓ Certified');
-      if (i === msgs.length - 1) {
-        timers.push(setTimeout(() => {
-          setSpeaking(null); setProgress(100);
-          setStatus('Council reached consensus — designation certified');
-          setRound('Session complete');
-          showVerdict(asset);
-          running = false;
-          document.getElementById('startBtn').disabled = false;
-          document.getElementById('startBtn').textContent = 'Score another asset';
-        }, 2000));
-      }
-    }, i * 2400);
-    timers.push(t);
+function showVerdict(assetName,assetDesc,tier,scores,keyPoints){
+  const tMap={
+    'Crown Jewel':{c:'var(--gold)',bg:'var(--gold-l)',b:'var(--gold-b)',icon:'👑'},
+    'High':{c:'var(--red)',bg:'var(--red-l)',b:'var(--red-b)',icon:'⚠'},
+    'Moderate':{c:'var(--blue)',bg:'var(--blue-l)',b:'var(--blue-b)',icon:'●'},
+    'Low':{c:'var(--text3)',bg:'var(--bg3)',b:'var(--border)',icon:'○'}
+  };
+  const t=tMap[tier]||tMap['Moderate'];
+  const scoreKeys=['Confidentiality','Integrity','Availability','Business Impact','Regulatory'];
+  const scoreVals=scores||['-','-','-','-','-'];
+  const pts=(keyPoints||[]).map(p=>`<div class="key-pt">${p}</div>`).join('');
+  const certPills=Array.from(certifications).map(n=>`<span class="cert-pill">${n}</span>`).join('');
+
+  document.getElementById('verdictArea').innerHTML=`
+    <div class="verdict" style="border:1px solid ${t.b};">
+      <p class="v-ey" style="color:${t.c};--eyec:${t.c};">${t.icon} Council verdict</p>
+      <p class="v-name">${assetName}</p>
+      <p class="v-desc">${assetDesc}</p>
+      <div class="v-tier" style="background:${t.bg};border:0.5px solid ${t.b};">
+        <span class="v-tier-lbl">Final designation</span>
+        <span class="v-tier-val" style="color:${t.c};">${t.icon} ${tier}</span>
+      </div>
+      <div class="scores">
+        ${scoreKeys.map((k,i)=>`<div class="sc"><p class="sc-d">${k}</p><p class="sc-n" style="color:${t.c};">${scoreVals[i]}<span class="sc-den">/5</span></p></div>`).join('')}
+      </div>
+      <div class="key-pts"><p class="key-pts-lbl">Key debate points</p>${pts}</div>
+      <div class="v-cert"><span class="v-cert-lbl">Certified by</span>${certPills}</div>
+    </div>`;
+}
+
+function parseVerdict(text){
+  if(!text.includes('===VERDICT==='))return null;
+  const block=text.split('===VERDICT===')[1].split('===END===')[0];
+  const lines=block.split('\n').map(l=>l.trim()).filter(Boolean);
+  const get=(prefix)=>{const l=lines.find(x=>x.startsWith(prefix));return l?l.replace(prefix,'').trim():null;};
+  const tier=get('FINAL TIER:')||'Moderate';
+  const scoreStr=get('SCORES:');
+  let scores=[3,3,3,3,3];
+  if(scoreStr){
+    const nums=scoreStr.match(/\d+/g);
+    if(nums&&nums.length>=5)scores=nums.slice(0,5).map(Number);
+  }
+  const pts=lines.filter(l=>l.startsWith('-')).map(l=>l.replace(/^-\s*/,''));
+  return{tier,scores,keyPoints:pts};
+}
+
+async function callClaude(persona,conversationHistory){
+  const apiKey=getApiKey();
+  if(!apiKey)throw new Error('No API key');
+
+  const resp=await fetch('https://api.anthropic.com/v1/messages',{
+    method:'POST',
+    headers:{
+      'Content-Type':'application/json',
+      'x-api-key':apiKey,
+      'anthropic-version':'2023-06-01',
+      'anthropic-beta':'messages-2023-06-01'
+    },
+    body:JSON.stringify({
+      model:persona.model,
+      max_tokens:1024,
+      system:persona.system,
+      messages:conversationHistory
+    })
   });
+
+  if(!resp.ok){
+    const err=await resp.json().catch(()=>({}));
+    throw new Error(err.error?.message||`API error ${resp.status}`);
+  }
+  const data=await resp.json();
+  return data.content[0].text;
+}
+
+function toggleCustom(){
+  const wrap=document.getElementById('customWrap');
+  const selWrap=document.getElementById('selWrap');
+  const btn=document.getElementById('toggleCustom');
+  const sel=document.getElementById('assetSelect');
+  const showing=wrap.classList.contains('show');
+  if(showing){
+    wrap.classList.remove('show');
+    selWrap.style.display='';
+    btn.textContent='+ Enter a custom asset instead';
+    sel.value='scada';
+  } else {
+    wrap.classList.add('show');
+    selWrap.style.display='none';
+    btn.textContent='− Use preset asset instead';
+  }
+}
+
+document.getElementById('assetSelect').addEventListener('change',function(){
+  if(this.value==='custom')toggleCustom();
+});
+
+async function startDebate(){
+  const apiKey=getApiKey();
+  if(!apiKey){
+    setStatus('Please paste your Anthropic API key above to start');
+    document.getElementById('apiKeyInput').focus();
+    return;
+  }
+
+  if(isRunning)return;
+  isRunning=true;
+  clearTimers();
+  certifications=new Set();
+  roundCount=0;
+  messages=[];
+
+  const isCustom=document.getElementById('customWrap').classList.contains('show');
+  let assetName,assetDesc;
+  if(isCustom){
+    const custom=document.getElementById('customAsset').value.trim();
+    if(!custom){setStatus('Please describe your custom asset');isRunning=false;return;}
+    assetName='Custom Asset';
+    assetDesc=custom;
+  } else {
+    const key=document.getElementById('assetSelect').value;
+    const a=ASSETS[key];
+    assetName=a.name;
+    assetDesc=a.desc;
+  }
+
+  document.getElementById('startBtn').disabled=true;
+  document.getElementById('startBtn').textContent='Debate in progress...';
+  document.getElementById('verdictArea').innerHTML='';
+  document.getElementById('feed').innerHTML='<div class="empty" id="emptyState">— initializing council session —</div>';
+  Object.keys(PERSONAS).forEach(k=>{setPersonaStat(k,'');document.getElementById(PERSONAS[k].cardId).classList.remove('speaking');});
+  setProgress(0);
+  setStatus('Starting autonomous debate...');
+  setRound('');
+
+  const assetContext=`ASSET BEING SCORED:\nName: ${assetName}\nDescription: ${assetDesc}`;
+  const speakerOrder=['moderator','ciso','cio','grc','cyberops','techops','secarch'];
+  const allVoices=['ciso','cio','grc','cyberops','techops','secarch'];
+  const maxRounds=20;
+  let verdictFound=false;
+
+  try {
+    while(roundCount<maxRounds && !verdictFound){
+      roundCount++;
+      setRound(`Round ${roundCount}`);
+      setProgress(Math.min(90,roundCount*5));
+
+      const speakers=roundCount===1?speakerOrder:
+        [...allVoices.sort(()=>Math.random()-0.5),'moderator'];
+
+      for(const speakerId of speakers){
+        if(verdictFound)break;
+        const persona=PERSONAS[speakerId];
+        setSpeaking(speakerId);
+        setStatus(`${persona.name} is speaking...`);
+
+        const history=[
+          {role:'user',content:`${assetContext}\n\nThis is the Crown Jewels Council scoring session. ${
+            roundCount===1 && speakerId==='moderator'
+              ? 'Please open the session, introduce the asset, and call on council members to begin scoring.'
+              : roundCount===1
+              ? `The moderator has opened the session. Please present your initial scores and reasoning for this asset. Be specific about your scores on each dimension (1-5): Confidentiality, Integrity, Availability, Business Impact, Regulatory Exposure.`
+              : `Continue the debate. Current certifications: ${certifications.size===0?'none yet':Array.from(certifications).join(', ')}. ${
+                certifications.size>=4?'Most members have certified. If you agree with the emerging consensus, certify now.':
+                'Engage with arguments made, challenge or support positions, and move toward or away from consensus based on your genuine assessment.'
+              } Previous discussion:\n\n${messages.slice(-8).map(m=>`${m.speaker}: ${m.text}`).join('\n\n')}`
+          }`}
+        ];
+
+        const msgDiv=addMessage(speakerId,'',true);
+        let fullText='';
+
+        try {
+          fullText=await callClaude(persona,history);
+        } catch(e){
+          fullText=`[Connection error: ${e.message}]`;
+        }
+
+        updateMessage(msgDiv,fullText,true);
+        messages.push({speaker:persona.name,speakerId,text:fullText});
+
+        if(fullText.toLowerCase().includes('certify this classification')){
+          certifications.add(persona.name);
+          setPersonaStat(speakerId,'✓ Certified');
+          setStatus(`${persona.name} certified — ${certifications.size}/${allVoices.length} certified`);
+        }
+
+        if(allVoices.every(id=>certifications.has(PERSONAS[id].name))){
+          verdictFound=true;
+          setProgress(95);
+          setStatus('All council members certified — generating verdict...');
+          break;
+        }
+
+        await new Promise(r=>setTimeout(r,800));
+      }
+    }
+
+    setSpeaking(null);
+    setProgress(100);
+
+    const lastMod=messages.filter(m=>m.speakerId==='moderator').pop();
+    let tier='High',scores=[4,4,4,4,4],keyPoints=['Full council reached consensus after debate.'];
+
+    if(lastMod){
+      const parsed=parseVerdict(lastMod.text);
+      if(parsed){tier=parsed.tier;scores=parsed.scores;keyPoints=parsed.keyPoints;}
+    }
+
+    if(!lastMod||!parseVerdict(lastMod?.text||'')){
+      const persona=PERSONAS['moderator'];
+      setSpeaking('moderator');
+      setStatus('Moderator closing session...');
+      const closingHistory=[{role:'user',content:`${assetContext}\n\nThe debate is complete. All certifications: ${Array.from(certifications).join(', ')}. Here is the full debate:\n\n${messages.map(m=>`${m.speaker}: ${m.text}`).join('\n\n')}\n\nPlease provide the final closing summary in the exact ===VERDICT=== format from your instructions.`}];
+      const closing=await callClaude(persona,closingHistory);
+      addMessage('moderator',closing,false);
+      messages.push({speaker:persona.name,speakerId:'moderator',text:closing});
+      const parsed=parseVerdict(closing);
+      if(parsed){tier=parsed.tier;scores=parsed.scores;keyPoints=parsed.keyPoints;}
+    }
+
+    showVerdict(assetName,assetDesc,tier,scores,keyPoints);
+    setStatus(`Session complete — ${assetName} designated ${tier}`);
+    setRound(`${roundCount} rounds · ${messages.length} exchanges`);
+
+  } catch(e){
+    setStatus('Error: '+e.message);
+    console.error(e);
+  }
+
+  setSpeaking(null);
+  isRunning=false;
+  document.getElementById('startBtn').disabled=false;
+  document.getElementById('startBtn').textContent='Score another asset';
 }
 </script>
 </body>
