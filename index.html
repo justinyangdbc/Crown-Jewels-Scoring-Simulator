@@ -229,7 +229,7 @@ footer{text-align:center;font-family:'IBM Plex Mono',monospace;font-size:10px;co
 
 <div class="prog-track"><div class="prog-fill" id="progFill"></div></div>
 <div class="stat-row">
-  <span class="stat-txt" id="statTxt">Paste your API key above and select an asset to begin</span>
+  <span class="stat-txt" id="statTxt">Select an asset and start the debate</span>
   <span class="stat-txt" id="roundTxt"></span>
 </div>
 
@@ -361,42 +361,7 @@ const ASSETS = {
 
 let messages=[], certifications=new Set(), roundCount=0, isRunning=false, timers=[], aborted=false;
 
-function getApiKey(){return document.getElementById('apiKeyInput').value.trim();}
-
-function toggleDrawer(){
-  const d=document.getElementById('apiDrawer');
-  d.classList.toggle('open');
-  if(d.classList.contains('open')){
-    document.getElementById('apiKeyVisible').focus();
-  }
-}
-
-function closeDrawer(){
-  document.getElementById('apiDrawer').classList.remove('open');
-}
-
-function saveKey(){
-  const val=document.getElementById('apiKeyVisible').value.trim();
-  document.getElementById('apiKeyInput').value=val;
-  const ind=document.getElementById('keyIndicator');
-  const lbl=document.getElementById('keyLabel');
-  if(val){
-    ind.classList.add('active');
-    lbl.textContent='Key set';
-  } else {
-    ind.classList.remove('active');
-    lbl.textContent='API key';
-  }
-  closeDrawer();
-}
-
-// Secret keyboard shortcut: press backtick ` to open the key drawer
-document.addEventListener('keydown',function(e){
-  if(e.key==='`' && !e.ctrlKey && !e.metaKey){
-    e.preventDefault();
-    toggleDrawer();
-  }
-});
+// API key handled server-side via Netlify function
 
 function clearTimers(){timers.forEach(clearTimeout);timers=[];}
 
