@@ -1,5 +1,4 @@
 exports.handler = async function(event, context) {
-  // Only allow POST requests
   if (event.httpMethod !== 'POST') {
     return { statusCode: 405, body: 'Method Not Allowed' };
   }
@@ -23,9 +22,9 @@ exports.handler = async function(event, context) {
         'anthropic-version': '2023-06-01'
       },
       body: JSON.stringify({
-        model: body.model || 'claude-sonnet-4-20250514',
-        max_tokens: body.max_tokens || 1024,
-        system: body.system,
+        model: body.model || 'claude-sonnet-4-6',
+        max_tokens: 250,
+        system: body.system + '\n\nCRITICAL: Your entire response must be 3 sentences maximum. No exceptions. Be direct and punchy.',
         messages: body.messages
       })
     });
