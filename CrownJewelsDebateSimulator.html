@@ -1,0 +1,794 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Crown Jewels Council — PG&E Asset Scoring Simulator</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #f5f4f0;
+    --bg2: #ffffff;
+    --bg3: #f9f8f5;
+    --border: rgba(0,0,0,0.08);
+    --border2: rgba(0,0,0,0.13);
+    --text: #1a1c22;
+    --text2: #555b6a;
+    --text3: #9b9fa8;
+    --gold: #9a6f1e;
+    --gold2: #b8861f;
+    --gold-bg: rgba(154,111,30,0.07);
+    --green: #1a7a56;
+    --green-bg: rgba(26,122,86,0.07);
+    --blue: #185fa5;
+    --blue-bg: rgba(24,95,165,0.07);
+    --amber: #8a5010;
+    --amber-bg: rgba(138,80,16,0.07);
+    --purple: #5b3fa8;
+    --purple-bg: rgba(91,63,168,0.07);
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    min-height: 100vh;
+  }
+
+  .dot-bg {
+    position: fixed;
+    inset: 0;
+    background-image: radial-gradient(circle, rgba(0,0,0,0.06) 1px, transparent 1px);
+    background-size: 28px 28px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .container {
+    position: relative;
+    z-index: 1;
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 2.5rem 1.5rem 4rem;
+  }
+
+  header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 2.5rem;
+    padding-bottom: 2rem;
+    border-bottom: 0.5px solid var(--border2);
+  }
+
+  .eyebrow {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .eyebrow::before {
+    content: '';
+    display: inline-block;
+    width: 20px;
+    height: 1px;
+    background: var(--gold);
+  }
+
+  h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 32px;
+    font-weight: 400;
+    color: var(--text);
+    line-height: 1.2;
+    margin-bottom: 6px;
+  }
+
+  .header-sub {
+    font-size: 14px;
+    color: var(--text2);
+    font-weight: 300;
+  }
+
+  .badge {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    padding: 5px 12px;
+    border-radius: 20px;
+    border: 0.5px solid var(--border2);
+    color: var(--text2);
+    white-space: nowrap;
+    background: var(--bg2);
+  }
+
+  .badge.live {
+    border-color: var(--green);
+    color: var(--green);
+    background: var(--green-bg);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .badge.live::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--green);
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+
+  .council-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    margin-bottom: 1.5rem;
+  }
+
+  .persona-card {
+    background: var(--bg2);
+    border: 0.5px solid var(--border);
+    border-radius: 12px;
+    padding: 14px;
+    transition: border-color 0.3s, background 0.3s, box-shadow 0.3s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .persona-card.speaking {
+    border-color: var(--speaker-color);
+    background: var(--speaker-bg);
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+  }
+
+  .persona-card.speaking::before {
+    content: 'Speaking';
+    position: absolute;
+    top: 8px;
+    right: 10px;
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.08em;
+    color: var(--speaker-color);
+    text-transform: uppercase;
+  }
+
+  .persona-avatar {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    font-weight: 500;
+    margin-bottom: 10px;
+    border: 0.5px solid var(--border2);
+  }
+
+  .persona-name {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text);
+    margin-bottom: 2px;
+  }
+
+  .persona-role {
+    font-size: 11px;
+    color: var(--text3);
+    font-family: 'DM Mono', monospace;
+    margin-bottom: 8px;
+  }
+
+  .persona-status {
+    font-size: 11px;
+    min-height: 16px;
+    font-family: 'DM Mono', monospace;
+  }
+
+  .controls-row {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 12px;
+    margin-bottom: 1.25rem;
+    align-items: center;
+  }
+
+  .asset-select-wrap {
+    background: var(--bg2);
+    border: 0.5px solid var(--border2);
+    border-radius: 10px;
+    padding: 0 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+  }
+
+  .asset-select-label {
+    font-size: 11px;
+    color: var(--text3);
+    font-family: 'DM Mono', monospace;
+    letter-spacing: 0.06em;
+    white-space: nowrap;
+  }
+
+  select {
+    background: transparent;
+    border: none;
+    outline: none;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 400;
+    padding: 14px 0;
+    width: 100%;
+    cursor: pointer;
+    appearance: none;
+  }
+
+  .start-btn {
+    background: var(--text);
+    color: #ffffff;
+    border: none;
+    border-radius: 10px;
+    padding: 14px 24px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 0.2s, transform 0.1s;
+    letter-spacing: 0.01em;
+  }
+
+  .start-btn:hover { background: #2e3340; }
+  .start-btn:active { transform: scale(0.98); }
+  .start-btn:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
+
+  .progress-track {
+    height: 2px;
+    background: var(--border2);
+    border-radius: 2px;
+    margin-bottom: 1rem;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--gold), var(--gold2));
+    border-radius: 2px;
+    width: 0%;
+    transition: width 0.5s ease;
+  }
+
+  .status-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+  }
+
+  .status-text {
+    font-size: 12px;
+    color: var(--text3);
+    font-family: 'DM Mono', monospace;
+    letter-spacing: 0.04em;
+  }
+
+  .round-count {
+    font-size: 12px;
+    color: var(--text3);
+    font-family: 'DM Mono', monospace;
+  }
+
+  .debate-panel {
+    background: var(--bg2);
+    border: 0.5px solid var(--border);
+    border-radius: 14px;
+    overflow: hidden;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 1px 6px rgba(0,0,0,0.04);
+  }
+
+  .debate-panel-header {
+    padding: 11px 18px;
+    border-bottom: 0.5px solid var(--border);
+    background: var(--bg3);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .panel-label {
+    font-size: 11px;
+    color: var(--text3);
+    font-family: 'DM Mono', monospace;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .debate-feed {
+    padding: 18px;
+    min-height: 260px;
+    max-height: 360px;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--border2) transparent;
+  }
+
+  .debate-empty {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 200px;
+    color: var(--text3);
+    font-size: 13px;
+    font-family: 'DM Mono', monospace;
+    letter-spacing: 0.04em;
+  }
+
+  .message {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 1.25rem;
+    animation: msgIn 0.35s ease forwards;
+    opacity: 0;
+  }
+
+  @keyframes msgIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .msg-avatar {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    font-weight: 500;
+    flex-shrink: 0;
+    margin-top: 2px;
+    border: 0.5px solid var(--border2);
+  }
+
+  .msg-body { flex: 1; }
+
+  .msg-header {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    margin-bottom: 5px;
+  }
+
+  .msg-name { font-size: 12px; font-weight: 500; color: var(--text); }
+  .msg-role { font-size: 10px; color: var(--text3); font-family: 'DM Mono', monospace; }
+
+  .msg-text {
+    font-size: 14px;
+    color: var(--text2);
+    line-height: 1.65;
+    background: var(--bg3);
+    border-radius: 4px 10px 10px 10px;
+    padding: 10px 14px;
+    border: 0.5px solid var(--border);
+  }
+
+  .msg-text.certified {
+    border-color: var(--green);
+    color: var(--green);
+    background: var(--green-bg);
+  }
+
+  .verdict-card {
+    background: var(--bg2);
+    border: 1px solid var(--gold);
+    border-radius: 14px;
+    padding: 1.5rem;
+    animation: verdictIn 0.5s ease forwards;
+    opacity: 0;
+    box-shadow: 0 2px 16px rgba(154,111,30,0.08);
+  }
+
+  @keyframes verdictIn {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .verdict-eyebrow {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .verdict-eyebrow::before {
+    content: '';
+    display: inline-block;
+    width: 16px;
+    height: 1px;
+    background: var(--gold);
+  }
+
+  .verdict-asset-name {
+    font-family: 'DM Serif Display', serif;
+    font-size: 22px;
+    font-weight: 400;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+
+  .verdict-tier-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin: 14px 0;
+    padding: 12px 16px;
+    background: var(--gold-bg);
+    border-radius: 8px;
+    border: 0.5px solid rgba(154,111,30,0.2);
+  }
+
+  .verdict-tier-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--text3);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .verdict-tier-value {
+    font-family: 'DM Serif Display', serif;
+    font-size: 22px;
+    color: var(--gold);
+  }
+
+  .scores-row {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 8px;
+    margin: 14px 0;
+  }
+
+  .score-cell {
+    background: var(--bg3);
+    border: 0.5px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 8px;
+    text-align: center;
+  }
+
+  .score-dim {
+    font-size: 9px;
+    color: var(--text3);
+    font-family: 'DM Mono', monospace;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 5px;
+    line-height: 1.3;
+  }
+
+  .score-num {
+    font-family: 'DM Serif Display', serif;
+    font-size: 22px;
+    color: var(--gold);
+    line-height: 1;
+  }
+
+  .score-denom { font-size: 11px; color: var(--text3); }
+
+  .certified-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 14px;
+    padding-top: 14px;
+    border-top: 0.5px solid var(--border);
+    flex-wrap: wrap;
+  }
+
+  .certified-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--text3);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .certified-badge {
+    font-size: 11px;
+    color: var(--green);
+    background: var(--green-bg);
+    border: 0.5px solid rgba(26,122,86,0.25);
+    border-radius: 20px;
+    padding: 3px 10px;
+    font-family: 'DM Mono', monospace;
+  }
+
+  .divider { height: 0.5px; background: var(--border2); margin: 2.5rem 0; }
+
+  footer {
+    text-align: center;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--text3);
+    letter-spacing: 0.06em;
+  }
+
+  @media (max-width: 640px) {
+    .council-grid { grid-template-columns: repeat(2, 1fr); }
+    .scores-row { grid-template-columns: repeat(3, 1fr); }
+    .controls-row { grid-template-columns: 1fr; }
+    h1 { font-size: 24px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="dot-bg"></div>
+
+<div class="container">
+
+  <header>
+    <div>
+      <p class="eyebrow">DayBlink Consulting</p>
+      <h1>Crown Jewels Council</h1>
+      <p class="header-sub">Autonomous stakeholder debate simulator — PG&E engagement</p>
+    </div>
+    <div class="badge live">Autonomous</div>
+  </header>
+
+  <div class="council-grid">
+    <div class="persona-card" id="card-moderator" style="--speaker-color: #5b3fa8; --speaker-bg: rgba(91,63,168,0.05);">
+      <div class="persona-avatar" style="background: rgba(91,63,168,0.08); color: #5b3fa8;">DB</div>
+      <p class="persona-name">Moderator</p>
+      <p class="persona-role">DayBlink / Facilitator</p>
+      <p class="persona-status" id="status-moderator" style="color: #5b3fa8;"></p>
+    </div>
+    <div class="persona-card" id="card-ciso" style="--speaker-color: #8a5010; --speaker-bg: rgba(138,80,16,0.05);">
+      <div class="persona-avatar" style="background: rgba(138,80,16,0.08); color: #8a5010;">MR</div>
+      <p class="persona-name">Maria Reyes</p>
+      <p class="persona-role">CISO</p>
+      <p class="persona-status" id="status-ciso" style="color: #8a5010;"></p>
+    </div>
+    <div class="persona-card" id="card-cio" style="--speaker-color: #185fa5; --speaker-bg: rgba(24,95,165,0.05);">
+      <div class="persona-avatar" style="background: rgba(24,95,165,0.08); color: #185fa5;">DC</div>
+      <p class="persona-name">David Chen</p>
+      <p class="persona-role">CIO</p>
+      <p class="persona-status" id="status-cio" style="color: #185fa5;"></p>
+    </div>
+    <div class="persona-card" id="card-grc" style="--speaker-color: #1a7a56; --speaker-bg: rgba(26,122,86,0.05);">
+      <div class="persona-avatar" style="background: rgba(26,122,86,0.08); color: #1a7a56;">VP</div>
+      <p class="persona-name">VP GRC</p>
+      <p class="persona-role">Governance & Risk</p>
+      <p class="persona-status" id="status-grc" style="color: #1a7a56;"></p>
+    </div>
+  </div>
+
+  <div class="controls-row">
+    <div class="asset-select-wrap">
+      <span class="asset-select-label">Asset</span>
+      <select id="assetSelect">
+        <option value="scada">SCADA Control Systems — Grid Operations</option>
+        <option value="cmdb">ServiceNow CMDB — Configuration Management Database</option>
+        <option value="iam">Identity & Access Management (IAM) Platform</option>
+        <option value="ot">OT Network Historian — Operational Technology Data</option>
+        <option value="billing">Customer Billing & Revenue System</option>
+      </select>
+    </div>
+    <button class="start-btn" id="startBtn" onclick="startDebate()">Start debate</button>
+  </div>
+
+  <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+
+  <div class="status-row">
+    <span class="status-text" id="statusText">Select an asset and start the debate</span>
+    <span class="round-count" id="roundCount"></span>
+  </div>
+
+  <div class="debate-panel">
+    <div class="debate-panel-header">
+      <span class="panel-label">Live transcript</span>
+    </div>
+    <div class="debate-feed" id="debateFeed">
+      <div class="debate-empty" id="emptyState">— awaiting session start —</div>
+    </div>
+  </div>
+
+  <div id="verdictArea"></div>
+
+  <div class="divider"></div>
+  <footer>PG&E Crown Jewels Assessment &nbsp;·&nbsp; DayBlink Consulting &nbsp;·&nbsp; Confidential</footer>
+
+</div>
+
+<script>
+const ASSETS = {
+  scada: {
+    name: "SCADA Control Systems",
+    desc: "Supervisory control of the electrical grid. Direct physical infrastructure control.",
+    debate: [
+      { speaker: "moderator", text: "Council, we're scoring SCADA Control Systems — direct supervisory control of PG&E's electrical grid infrastructure. This is our highest-stakes asset. Maria, please open the scoring." },
+      { speaker: "ciso", text: "Crown Jewel, no question. Confidentiality 5/5 — the control logic is a blueprint for a physical attack. Integrity 5/5 — a tampered command could cause real-world equipment damage. This is the asset that keeps the lights on for 16 million Californians." },
+      { speaker: "cio", text: "Availability 5/5 from me — SCADA going down is a grid outage, full stop. I agree on Crown Jewel. My only question is whether our existing CIP controls are being consistently applied given the air-gap architecture." },
+      { speaker: "grc", text: "NERC CIP-007 and CIP-010 apply directly here. These are our highest-tier BES Cyber Systems by definition. Crown Jewels designation formalizes the prioritization framework. Regulatory exposure 5/5." },
+      { speaker: "ciso", text: "David raises a good point on the air gap — it helps but doesn't eliminate risk. The 2021 Oldsmar water treatment attack came through a remote access tool, not a direct network breach. We need Crown Jewel controls specifically on remote access to SCADA." },
+      { speaker: "cio", text: "Agreed. Enhanced remote access controls as a required Crown Jewel control alongside existing CIP requirements. That's a documented action item from this session. I can certify this classification." },
+      { speaker: "grc", text: "Remote access controls noted for the runbook. I can certify this classification." },
+      { speaker: "ciso", text: "I can certify this classification." },
+      { speaker: "moderator", text: "Unanimous Crown Jewel designation. SCADA designated highest-priority. Required controls: existing NERC CIP-007/010 plus enhanced remote access controls. Session certified." }
+    ],
+    verdict: { tier: "Crown Jewel", scores: { conf: 5, integ: 5, avail: 5, impact: 5, reg: 5 } }
+  },
+  cmdb: {
+    name: "ServiceNow CMDB",
+    desc: "Primary IT asset inventory. 18 months stale. Involved in Q3 2025 breach.",
+    debate: [
+      { speaker: "moderator", text: "We're scoring the ServiceNow CMDB — PG&E's primary IT asset inventory system. This was at the center of our Q3 2025 incident: 47 days of unauthorized access to network topology data. Maria, your opening position." },
+      { speaker: "ciso", text: "Crown Jewel. Confidentiality 5/5 — this system handed attackers a complete map of our network. Integrity 5/5 — stale records delayed our incident response by 11 days. We cannot underrate this." },
+      { speaker: "cio", text: "I'd push back on Availability being a 5. This system has been 18 months stale and we've been operating. I'd score it 4/5. Crown Jewel may be right — but I want the rationale to be precise, not reflexive." },
+      { speaker: "grc", text: "NERC CIP requires documented asset inventory for all BES Cyber Systems. Regulatory Exposure is 5/5. A Q4 audit without a defensible CMDB is a repeat of our 2020 violation. $2.7M we cannot afford again." },
+      { speaker: "ciso", text: "David, availability isn't why I'm scoring this Crown Jewel. It's the confidentiality of what's inside. A threat actor with our full topology map can move laterally undetected for months — exactly what happened in Q3." },
+      { speaker: "cio", text: "That argument holds. Crown Jewel if we document it's the data sensitivity driving the designation, not system availability. That distinction matters for how we resource the protection program." },
+      { speaker: "grc", text: "Rationale documented: confidentiality of network topology and NERC CIP compliance. I can certify this classification." },
+      { speaker: "ciso", text: "I can certify this classification." },
+      { speaker: "cio", text: "With that documented rationale, I can certify this classification." },
+      { speaker: "moderator", text: "Council certified. CMDB designated Crown Jewel. Primary drivers: confidentiality of network topology data and NERC CIP compliance obligations. Rationale on record." }
+    ],
+    verdict: { tier: "Crown Jewel", scores: { conf: 5, integ: 5, avail: 4, impact: 5, reg: 5 } }
+  },
+  iam: {
+    name: "Identity & Access Management Platform",
+    desc: "Authentication and authorization for all enterprise systems. Controls all privileged access.",
+    debate: [
+      { speaker: "moderator", text: "Today we're scoring the IAM Platform — the system that controls who gets access to everything else at PG&E. This is foundational to our entire security architecture. Maria, please open." },
+      { speaker: "ciso", text: "Crown Jewel. This is the master key to every system we own. Confidentiality 5/5 — compromise here means compromise everywhere. Integrity 5/5 — if access records are tampered with, we have no audit trail." },
+      { speaker: "cio", text: "Agreed on Crown Jewel. If IAM goes down, nobody can authenticate to any system. Availability is a 5 here — this is one of the rare cases where I'm fully aligned with Maria across all dimensions." },
+      { speaker: "grc", text: "SOX IT general controls and NERC CIP both require access management documentation and review. IAM is the system of record for compliance. Regulatory exposure 5/5. Full alignment across the council." },
+      { speaker: "ciso", text: "The debate here isn't the designation — it's the controls. PAM, MFA enforcement, and session recording need to be explicitly required as Crown Jewel controls for this asset specifically." },
+      { speaker: "cio", text: "Agreed. PAM, MFA enforcement, and session recording as mandatory Crown Jewel controls for IAM. Goes into the runbook. I can certify this classification." },
+      { speaker: "grc", text: "Controls documented. I can certify this classification." },
+      { speaker: "ciso", text: "I can certify this classification." },
+      { speaker: "moderator", text: "Full council consensus — fastest certification this session. IAM Platform designated Crown Jewel unanimously. Mandatory controls on record: PAM, MFA enforcement, session recording." }
+    ],
+    verdict: { tier: "Crown Jewel", scores: { conf: 5, integ: 5, avail: 5, impact: 5, reg: 5 } }
+  },
+  ot: {
+    name: "OT Network Historian",
+    desc: "IT/OT bridge storing grid sensor time-series data. NERC CIP-005 scope.",
+    debate: [
+      { speaker: "moderator", text: "We're scoring the OT Network Historian — the system bridging our IT and OT environments. It stores time-series data from grid sensors and control systems. Maria, your opening position." },
+      { speaker: "ciso", text: "Crown Jewel. This is the IT-OT bridge attackers specifically target — it gives network reconnaissance into our OT environment without touching a control system directly. Confidentiality 5/5." },
+      { speaker: "cio", text: "I agree on sensitivity but want to challenge availability. If the historian goes down, do grid operations actually stop? I don't believe they do short term. I'd score availability 3/5 and lean High rather than Crown Jewel on that dimension." },
+      { speaker: "grc", text: "The IT-OT bridge is explicitly covered under NERC CIP-005 Electronic Security Perimeters. Any system traversing the ESP boundary is subject to elevated controls by definition. Regulatory exposure 5/5. I'm at Crown Jewel." },
+      { speaker: "ciso", text: "David, an adversary who owns the historian can map our entire OT network — sensor locations, communication patterns, timing cycles — without ever sending a command. That's the intelligence value we're protecting." },
+      { speaker: "cio", text: "That reframes it entirely. Crown Jewel with the documented rationale around intelligence value and CIP-005 scope. I can certify this classification." },
+      { speaker: "grc", text: "I can certify this classification." },
+      { speaker: "ciso", text: "I can certify this classification." },
+      { speaker: "moderator", text: "Council certified. OT Network Historian designated Crown Jewel. Drivers: IT-OT bridge reconnaissance risk and NERC CIP-005 electronic security perimeter obligations." }
+    ],
+    verdict: { tier: "Crown Jewel", scores: { conf: 5, integ: 4, avail: 3, impact: 5, reg: 5 } }
+  },
+  billing: {
+    name: "Customer Billing & Revenue System",
+    desc: "Billing for 5M+ customers. PII, payment data, CPUC regulated.",
+    debate: [
+      { speaker: "moderator", text: "We're scoring the Customer Billing System — 5 million customer accounts, PII, payment data, and CPUC regulatory obligations. David, given the revenue impact, would you like to open?" },
+      { speaker: "cio", text: "I'll open. Availability 5/5 — if billing goes down, we stop generating revenue and CPUC notification is required within 24 hours. Business impact is as high as it gets outside of grid operations." },
+      { speaker: "ciso", text: "Confidentiality 4/5 — PII and payment data exposure is material but this isn't the network topology risk that concerns me most. The real question is whether CPUC and CCPA exposure pushes this to Crown Jewel." },
+      { speaker: "grc", text: "CPUC requires breach notification within 72 hours. PII exposure triggers California Consumer Privacy Act obligations with statutory damages. Regulatory exposure 5/5. Combined with revenue availability, I'm at Crown Jewel." },
+      { speaker: "cio", text: "The CPUC and CCPA combination settles it. Crown Jewel — primary drivers are availability and regulatory, not confidentiality. That's important for how we scope the protection controls." },
+      { speaker: "ciso", text: "Agreed on the rationale. Crown Jewel with documented drivers. I can certify this classification." },
+      { speaker: "grc", text: "I can certify this classification." },
+      { speaker: "cio", text: "I can certify this classification." },
+      { speaker: "moderator", text: "Council certified. Billing System designated Crown Jewel. Primary drivers: revenue availability, CPUC notification obligations, and CCPA PII exposure. Rationale on record." }
+    ],
+    verdict: { tier: "Crown Jewel", scores: { conf: 4, integ: 4, avail: 5, impact: 5, reg: 5 } }
+  }
+};
+
+const SPEAKERS = {
+  moderator: { name: "Moderator", role: "DayBlink", initials: "DB", color: "#5b3fa8", bg: "rgba(91,63,168,0.08)", cardId: "card-moderator" },
+  ciso:      { name: "Maria Reyes", role: "CISO", initials: "MR", color: "#8a5010", bg: "rgba(138,80,16,0.08)", cardId: "card-ciso" },
+  cio:       { name: "David Chen", role: "CIO", initials: "DC", color: "#185fa5", bg: "rgba(24,95,165,0.08)", cardId: "card-cio" },
+  grc:       { name: "VP GRC", role: "Governance", initials: "VP", color: "#1a7a56", bg: "rgba(26,122,86,0.08)", cardId: "card-grc" }
+};
+
+let running = false, timers = [];
+function clearTimers() { timers.forEach(clearTimeout); timers = []; }
+function setProgress(p) { document.getElementById('progressFill').style.width = p + '%'; }
+function setStatus(t) { document.getElementById('statusText').textContent = t; }
+function setRound(t) { document.getElementById('roundCount').textContent = t; }
+
+function setSpeaking(id) {
+  Object.keys(SPEAKERS).forEach(k => {
+    document.getElementById(SPEAKERS[k].cardId).classList.toggle('speaking', k === id);
+  });
+}
+
+function setPersonaStatus(id, text) {
+  const el = document.getElementById('status-' + id);
+  if (el) el.textContent = text;
+}
+
+function addMessage(speakerId, text) {
+  const feed = document.getElementById('debateFeed');
+  const empty = document.getElementById('emptyState');
+  if (empty) empty.remove();
+  const s = SPEAKERS[speakerId];
+  const certified = text.includes('certify');
+  const div = document.createElement('div');
+  div.className = 'message';
+  div.innerHTML = `<div class="msg-avatar" style="background:${s.bg};color:${s.color};">${s.initials}</div><div class="msg-body"><div class="msg-header"><span class="msg-name">${s.name}</span><span class="msg-role">${s.role}</span></div><p class="msg-text${certified?' certified':''}">${text}</p></div>`;
+  feed.appendChild(div);
+  feed.scrollTop = feed.scrollHeight;
+}
+
+function showVerdict(asset) {
+  const v = asset.verdict, s = v.scores;
+  document.getElementById('verdictArea').innerHTML = `<div class="verdict-card"><p class="verdict-eyebrow">Council verdict</p><p class="verdict-asset-name">${asset.name}</p><p style="font-size:13px;color:var(--text2);margin-bottom:4px;">${asset.desc}</p><div class="verdict-tier-row"><span class="verdict-tier-label">Final designation</span><span class="verdict-tier-value">👑 ${v.tier}</span></div><div class="scores-row"><div class="score-cell"><p class="score-dim">Confidentiality</p><p class="score-num">${s.conf}<span class="score-denom">/5</span></p></div><div class="score-cell"><p class="score-dim">Integrity</p><p class="score-num">${s.integ}<span class="score-denom">/5</span></p></div><div class="score-cell"><p class="score-dim">Availability</p><p class="score-num">${s.avail}<span class="score-denom">/5</span></p></div><div class="score-cell"><p class="score-dim">Business impact</p><p class="score-num">${s.impact}<span class="score-denom">/5</span></p></div><div class="score-cell"><p class="score-dim">Regulatory</p><p class="score-num">${s.reg}<span class="score-denom">/5</span></p></div></div><div class="certified-row"><span class="certified-label">Certified by</span><span class="certified-badge">Maria Reyes · CISO</span><span class="certified-badge">David Chen · CIO</span><span class="certified-badge">VP GRC</span><span class="certified-badge">DayBlink Moderator</span></div></div>`;
+}
+
+function startDebate() {
+  if (running) return;
+  clearTimers(); running = true;
+  const key = document.getElementById('assetSelect').value;
+  const asset = ASSETS[key];
+  document.getElementById('startBtn').disabled = true;
+  document.getElementById('verdictArea').innerHTML = '';
+  document.getElementById('debateFeed').innerHTML = '<div class="debate-empty" id="emptyState">— initializing session —</div>';
+  Object.keys(SPEAKERS).forEach(k => setPersonaStatus(k, ''));
+  setProgress(0); setSpeaking(null); setRound('');
+  const msgs = asset.debate;
+  msgs.forEach((m, i) => {
+    const t = setTimeout(() => {
+      setSpeaking(m.speaker);
+      setStatus(SPEAKERS[m.speaker].name + ' is speaking...');
+      setRound('Round ' + (i+1) + ' of ' + msgs.length);
+      addMessage(m.speaker, m.text);
+      setProgress(Math.round(((i+1)/msgs.length)*88));
+      if (m.text.includes('certify') && m.speaker !== 'moderator') setPersonaStatus(m.speaker, '✓ Certified');
+      if (i === msgs.length - 1) {
+        timers.push(setTimeout(() => {
+          setSpeaking(null); setProgress(100);
+          setStatus('Council reached consensus — designation certified');
+          setRound('Session complete');
+          showVerdict(asset);
+          running = false;
+          document.getElementById('startBtn').disabled = false;
+          document.getElementById('startBtn').textContent = 'Score another asset';
+        }, 2000));
+      }
+    }, i * 2400);
+    timers.push(t);
+  });
+}
+</script>
+</body>
+</html>
