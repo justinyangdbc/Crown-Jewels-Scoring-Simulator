@@ -446,15 +446,9 @@ document.addEventListener('keydown',function(e){
 });
 
 async function callAPI(systemPrompt, userPrompt){
-  const apiKey=getApiKey();
-  if(!apiKey)throw new Error('No API key set — click the API key indicator in the top right to add your key');
-  const resp = await fetch('https://api.anthropic.com/v1/messages',{
+  const resp = await fetch('/.netlify/functions/debate',{
     method:'POST',
-    headers:{
-      'Content-Type':'application/json',
-      'x-api-key':apiKey,
-      'anthropic-version':'2023-06-01'
-    },
+    headers:{'Content-Type':'application/json'},
     body:JSON.stringify({
       model:'claude-sonnet-4-6',
       max_tokens:300,
@@ -503,13 +497,6 @@ function stopScoring(){
 
 async function startScoring(){
   if(running)return;
-
-  const apiKey=getApiKey();
-  if(!apiKey){
-    setStatus('Please set your API key first — click "API key" in the top right');
-    toggleKeyDrawer();
-    return;
-  }
 
   running=true;aborted=false;
   consensusScores={};
