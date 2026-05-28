@@ -3,312 +3,398 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Crown Jewels Council — PG&E Asset Scoring Simulator</title>
-<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<title>Crown Jewels Scoring Session — PG&E</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=JetBrains+Mono:wght@400;500&family=Nunito+Sans:wght@300;400;600&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 :root{
-  --bg:#f7f5f0;--bg2:#ffffff;--bg3:#f0ede6;
-  --border:rgba(0,0,0,0.09);--border2:rgba(0,0,0,0.15);
-  --text:#1c1a16;--text2:#5a5650;--text3:#9a958e;
-  --gold:#8b6914;--gold-l:#f5edda;--gold-b:rgba(139,105,20,0.2);
-  --red:#8b1a1a;--red-l:#faeaea;--red-b:rgba(139,26,26,0.2);
-  --blue:#1a3d8b;--blue-l:#eaeefc;--blue-b:rgba(26,61,139,0.2);
-  --green:#1a6b3a;--green-l:#e8f5ee;--green-b:rgba(26,107,58,0.2);
-  --purple:#4a1a8b;--purple-l:#eeebfc;--purple-b:rgba(74,26,139,0.2);
-  --amber:#8b4a0a;--amber-l:#fdf0e0;--amber-b:rgba(139,74,10,0.2);
-  --teal:#0a6b6b;--teal-l:#e0f5f5;--teal-b:rgba(10,107,107,0.2);
+  --bg:#f8f6f1;--bg2:#ffffff;--bg3:#f0ede5;--bg4:#e8e4da;
+  --border:rgba(0,0,0,0.08);--border2:rgba(0,0,0,0.14);
+  --text:#1a1714;--text2:#5c5750;--text3:#9c9590;
+  --gold:#8b6500;--gold-l:#fdf3d8;--gold-b:rgba(139,101,0,0.2);
+  --red:#7a1515;--red-l:#fdeaea;
+  --blue:#13367a;--blue-l:#eaf0fc;
+  --green:#0f5c2e;--green-l:#e8f7ee;--green-b:rgba(15,92,46,0.2);
+  --amber:#7a3d00;--amber-l:#fef0e0;
+  --teal:#075c52;--teal-l:#e0f5f2;
+  --purple:#3d1478;--purple-l:#f0ebfd;
 }
-body{background:var(--bg);color:var(--text);font-family:'IBM Plex Sans',sans-serif;font-weight:300;min-height:100vh;}
-.paper-bg{position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg width='200' height='200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");pointer-events:none;z-index:0;}
-.wrap{position:relative;z-index:1;max-width:1020px;margin:0 auto;padding:2.5rem 1.5rem 5rem;}
-header{border-bottom:1px solid var(--border2);padding-bottom:1.75rem;margin-bottom:2rem;display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;}
-.eyebrow{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold);margin-bottom:10px;display:flex;align-items:center;gap:10px;}
-.eyebrow::before{content:'';display:inline-block;width:24px;height:1px;background:var(--gold);}
-h1{font-family:'Libre Baskerville',serif;font-size:30px;font-weight:400;color:var(--text);line-height:1.2;margin-bottom:5px;}
-.hd-sub{font-size:13px;color:var(--text2);}
-.live-badge{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:0.08em;padding:5px 12px;border-radius:3px;border:0.5px solid var(--green-b);color:var(--green);background:var(--green-l);display:flex;align-items:center;gap:6px;white-space:nowrap;flex-shrink:0;}
-.live-dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:blink 2s infinite;}
-@keyframes blink{0%,100%{opacity:1;}50%{opacity:0.2;}}
-.council-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;margin-bottom:1.5rem;}
-.p-card{background:var(--bg2);border:0.5px solid var(--border);border-radius:8px;padding:10px 8px;text-align:center;transition:border-color 0.25s,background 0.25s;position:relative;overflow:hidden;}
-.p-card.speaking{border-color:var(--pc);background:var(--pb);}
-.p-card.speaking::after{content:'●';position:absolute;top:6px;right:7px;font-size:8px;color:var(--pc);animation:blink 1s infinite;}
-.p-av{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:500;margin:0 auto 7px;border:0.5px solid var(--border2);}
-.p-name{font-size:11px;font-weight:500;color:var(--text);margin-bottom:1px;line-height:1.2;}
-.p-role{font-size:9px;color:var(--text3);font-family:'IBM Plex Mono',monospace;margin-bottom:6px;line-height:1.3;}
-.p-stat{font-size:9px;font-family:'IBM Plex Mono',monospace;min-height:14px;}
-.asset-area{background:var(--bg2);border:0.5px solid var(--border2);border-radius:8px;padding:1rem 1.25rem;margin-bottom:1rem;}
-.asset-label{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--text3);margin-bottom:8px;display:block;}
-.asset-row{display:flex;gap:10px;align-items:stretch;}
-.asset-sel-wrap{flex:1;}
-select{width:100%;background:var(--bg3);border:0.5px solid var(--border2);border-radius:6px;padding:10px 12px;font-family:'IBM Plex Sans',sans-serif;font-size:13px;color:var(--text);outline:none;cursor:pointer;appearance:none;}
-select:focus{border-color:var(--gold);}
-.custom-wrap{flex:1;display:none;}
-.custom-wrap.show{display:block;}
-textarea{width:100%;background:var(--bg3);border:0.5px solid var(--border2);border-radius:6px;padding:10px 12px;font-family:'IBM Plex Sans',sans-serif;font-size:13px;color:var(--text);outline:none;resize:vertical;min-height:60px;}
-textarea:focus{border-color:var(--gold);}
-.toggle-custom{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:0.06em;color:var(--gold);cursor:pointer;background:none;border:none;padding:0;margin-top:6px;display:block;text-decoration:underline;}
-.btn-row{display:flex;gap:8px;}
-.start-btn{background:var(--text);color:#fff;border:none;border-radius:6px;padding:10px 22px;font-family:'IBM Plex Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;white-space:nowrap;transition:background 0.15s;}
-.start-btn:hover{background:#2e2b24;}
-.start-btn:disabled{opacity:0.35;cursor:not-allowed;}
-.stop-btn{background:none;color:var(--red);border:0.5px solid var(--red-b);border-radius:6px;padding:10px 18px;font-family:'IBM Plex Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;display:none;}
+body{background:var(--bg);color:var(--text);font-family:'Nunito Sans',sans-serif;font-weight:300;min-height:100vh;}
+
+/* Subtle paper texture */
+body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");pointer-events:none;z-index:0;}
+
+.wrap{position:relative;z-index:1;max-width:1080px;margin:0 auto;padding:2.5rem 1.5rem 5rem;}
+
+/* ── HEADER ── */
+header{margin-bottom:2.5rem;padding-bottom:1.75rem;border-bottom:1px solid var(--border2);}
+.hd-top{display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;margin-bottom:0;}
+.eyebrow{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold);margin-bottom:10px;display:flex;align-items:center;gap:10px;}
+.eyebrow::before{content:'';display:inline-block;width:22px;height:1px;background:var(--gold);}
+h1{font-family:'Playfair Display',serif;font-size:32px;font-weight:600;color:var(--text);line-height:1.2;margin-bottom:5px;}
+.hd-sub{font-size:13px;color:var(--text2);max-width:500px;}
+.status-badge{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.08em;padding:5px 12px;border-radius:3px;display:flex;align-items:center;gap:6px;white-space:nowrap;flex-shrink:0;border:0.5px solid var(--border2);color:var(--text3);background:var(--bg3);}
+.status-badge.running{border-color:var(--gold-b);color:var(--gold);background:var(--gold-l);}
+.status-badge .dot{width:6px;height:6px;border-radius:50%;background:currentColor;animation:pulse 1.5s infinite;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.3;}}
+
+/* ── TEAM CARDS ── */
+.team-row{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:1.75rem;}
+.persona-card{background:var(--bg2);border:0.5px solid var(--border);border-radius:10px;padding:12px 10px;text-align:center;transition:border-color 0.2s,background 0.2s;position:relative;overflow:hidden;}
+.persona-card.active{border-color:var(--pc);background:var(--pb);}
+.persona-card.active::after{content:'speaking';position:absolute;top:7px;right:8px;font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:0.08em;color:var(--pc);text-transform:uppercase;animation:pulse 1s infinite;}
+.p-av{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:500;margin:0 auto 8px;border:0.5px solid rgba(0,0,0,0.1);}
+.p-name{font-size:12px;font-weight:600;color:var(--text);margin-bottom:2px;}
+.p-title{font-size:9px;color:var(--text3);font-family:'JetBrains Mono',monospace;line-height:1.3;margin-bottom:7px;}
+.p-score{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:500;min-height:16px;}
+
+/* ── FAMILY SELECTOR ── */
+.selector-area{background:var(--bg2);border:0.5px solid var(--border2);border-radius:10px;padding:1.25rem;margin-bottom:1.25rem;}
+.sel-label{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--text3);margin-bottom:10px;display:block;}
+.family-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:12px;}
+.family-btn{background:var(--bg3);border:0.5px solid var(--border2);border-radius:7px;padding:10px 14px;text-align:left;cursor:pointer;transition:all 0.15s;font-family:'Nunito Sans',sans-serif;}
+.family-btn:hover{border-color:var(--gold-b);background:var(--gold-l);}
+.family-btn.selected{border-color:var(--gold);background:var(--gold-l);}
+.family-btn .fb-name{font-size:13px;font-weight:600;color:var(--text);display:block;margin-bottom:2px;}
+.family-btn .fb-count{font-size:10px;color:var(--text3);font-family:'JetBrains Mono',monospace;}
+.run-btn{background:var(--text);color:#fff;border:none;border-radius:7px;padding:11px 28px;font-family:'Nunito Sans',sans-serif;font-size:14px;font-weight:600;cursor:pointer;transition:background 0.15s,transform 0.1s;letter-spacing:0.01em;}
+.run-btn:hover{background:#2a2520;}
+.run-btn:active{transform:scale(0.98);}
+.run-btn:disabled{opacity:0.35;cursor:not-allowed;transform:none;}
+.stop-btn{background:none;color:var(--red);border:0.5px solid rgba(122,21,21,0.25);border-radius:7px;padding:11px 20px;font-family:'Nunito Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer;display:none;transition:background 0.15s;}
 .stop-btn:hover{background:var(--red-l);}
+.btn-row{display:flex;gap:8px;align-items:center;}
+
+/* ── PROGRESS ── */
 .prog-track{height:2px;background:var(--border);border-radius:2px;margin-bottom:0.75rem;overflow:hidden;}
-.prog-fill{height:100%;background:linear-gradient(90deg,var(--gold),#c4942a);width:0%;transition:width 0.6s ease;}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--gold),#c9a030);width:0%;transition:width 0.5s ease;}
+.phase-pills{display:flex;gap:6px;margin-bottom:0.75rem;flex-wrap:wrap;}
+.pill{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.07em;padding:3px 10px;border-radius:20px;border:0.5px solid var(--border2);color:var(--text3);background:var(--bg2);text-transform:uppercase;}
+.pill.active{border-color:var(--gold-b);color:var(--gold);background:var(--gold-l);}
+.pill.done{border-color:var(--green-b);color:var(--green);background:var(--green-l);}
 .stat-row{display:flex;justify-content:space-between;margin-bottom:0.75rem;}
-.stat-txt{font-size:11px;color:var(--text3);font-family:'IBM Plex Mono',monospace;letter-spacing:0.04em;}
-.phase-pills{display:flex;gap:6px;margin-bottom:1rem;flex-wrap:wrap;}
-.phase-pill{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:0.08em;padding:3px 10px;border-radius:20px;border:0.5px solid var(--border2);color:var(--text3);background:var(--bg2);}
-.phase-pill.active{border-color:var(--gold-b);color:var(--gold);background:var(--gold-l);}
-.phase-pill.done{border-color:var(--green-b);color:var(--green);background:var(--green-l);}
-.panel{background:var(--bg2);border:0.5px solid var(--border);border-radius:8px;overflow:hidden;margin-bottom:1.25rem;}
-.panel-hd{padding:9px 16px;border-bottom:0.5px solid var(--border);background:var(--bg3);display:flex;align-items:center;justify-content:space-between;}
-.panel-lbl{font-size:10px;color:var(--text3);font-family:'IBM Plex Mono',monospace;letter-spacing:0.1em;text-transform:uppercase;}
-.feed{padding:16px;min-height:240px;max-height:440px;overflow-y:auto;scrollbar-width:thin;}
-.empty{display:flex;align-items:center;justify-content:center;height:180px;color:var(--text3);font-size:12px;font-family:'IBM Plex Mono',monospace;letter-spacing:0.06em;}
-.msg{display:flex;gap:10px;margin-bottom:1.1rem;animation:msgIn 0.3s ease forwards;opacity:0;}
+.stat-txt{font-size:11px;color:var(--text3);font-family:'JetBrains Mono',monospace;letter-spacing:0.04em;}
+
+/* ── DEBATE PANEL ── */
+.panel{background:var(--bg2);border:0.5px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:1.25rem;}
+.panel-hd{padding:10px 16px;border-bottom:0.5px solid var(--border);background:var(--bg3);display:flex;align-items:center;justify-content:space-between;}
+.panel-lbl{font-size:10px;color:var(--text3);font-family:'JetBrains Mono',monospace;letter-spacing:0.1em;text-transform:uppercase;}
+.feed{padding:16px;min-height:260px;max-height:440px;overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--border2) transparent;}
+.empty{display:flex;align-items:center;justify-content:center;height:200px;color:var(--text3);font-size:12px;font-family:'JetBrains Mono',monospace;letter-spacing:0.06em;}
+
+/* ── MESSAGES ── */
+.msg{display:flex;gap:10px;margin-bottom:1rem;animation:msgIn 0.3s ease forwards;opacity:0;}
 @keyframes msgIn{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
-.m-av{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'IBM Plex Mono',monospace;font-size:9px;font-weight:500;flex-shrink:0;margin-top:2px;border:0.5px solid var(--border2);}
+.m-av{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:500;flex-shrink:0;margin-top:2px;border:0.5px solid rgba(0,0,0,0.1);}
 .m-body{flex:1;}
-.m-hd{display:flex;align-items:baseline;gap:7px;margin-bottom:4px;}
-.m-name{font-size:11px;font-weight:500;color:var(--text);}
-.m-role{font-size:9px;color:var(--text3);font-family:'IBM Plex Mono',monospace;}
-.m-time{font-size:9px;color:var(--text3);font-family:'IBM Plex Mono',monospace;margin-left:auto;}
+.m-hd{display:flex;align-items:baseline;gap:8px;margin-bottom:4px;}
+.m-name{font-size:12px;font-weight:600;color:var(--text);}
+.m-role{font-size:9px;color:var(--text3);font-family:'JetBrains Mono',monospace;}
+.m-time{font-size:9px;color:var(--text3);font-family:'JetBrains Mono',monospace;margin-left:auto;}
 .m-txt{font-size:13px;color:var(--text2);line-height:1.65;background:var(--bg3);border-radius:3px 8px 8px 8px;padding:9px 13px;border:0.5px solid var(--border);}
-.m-txt.certified{border-color:var(--green);color:var(--green);background:var(--green-l);}
-.m-txt.phase-header{border-color:var(--gold-b);background:var(--gold-l);color:var(--gold);font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:0.06em;}
-.verdict{background:var(--bg2);border-radius:8px;padding:1.5rem;animation:vIn 0.4s ease forwards;opacity:0;}
-@keyframes vIn{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
-.v-ey{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:10px;}
-.v-name{font-family:'Libre Baskerville',serif;font-size:20px;font-weight:400;color:var(--text);margin-bottom:3px;}
-.v-desc{font-size:12px;color:var(--text2);margin-bottom:12px;}
-.v-tier{display:flex;align-items:center;gap:12px;padding:11px 15px;border-radius:6px;margin-bottom:12px;}
-.v-tier-lbl{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:0.08em;text-transform:uppercase;color:var(--text3);}
-.v-tier-val{font-family:'Libre Baskerville',serif;font-size:20px;}
-.scores{display:grid;grid-template-columns:repeat(5,1fr);gap:7px;margin-bottom:12px;}
-.sc{background:var(--bg3);border:0.5px solid var(--border);border-radius:6px;padding:9px 7px;text-align:center;}
-.sc-d{font-size:8px;color:var(--text3);font-family:'IBM Plex Mono',monospace;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:4px;line-height:1.3;}
-.sc-n{font-family:'Libre Baskerville',serif;font-size:20px;line-height:1;}
-.sc-den{font-size:10px;color:var(--text3);}
-.v-cert{display:flex;flex-wrap:wrap;align-items:center;gap:7px;padding-top:12px;border-top:0.5px solid var(--border);}
-.v-cert-lbl{font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:0.08em;}
-.cert-pill{font-size:10px;font-family:'IBM Plex Mono',monospace;padding:3px 9px;border-radius:20px;background:var(--green-l);color:var(--green);border:0.5px solid var(--green-b);}
-.key-pts{margin-top:12px;padding-top:12px;border-top:0.5px solid var(--border);}
-.key-pts-lbl{font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px;}
-.key-pt{font-size:12px;color:var(--text2);padding:4px 0 4px 12px;border-left:2px solid var(--border2);margin-bottom:4px;line-height:1.5;}
-footer{text-align:center;font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--text3);letter-spacing:0.08em;margin-top:2.5rem;padding-top:1.5rem;border-top:0.5px solid var(--border);}
-@media(max-width:700px){.council-grid{grid-template-columns:repeat(4,1fr);}.scores{grid-template-columns:repeat(3,1fr);}.asset-row{flex-direction:column;}h1{font-size:22px;}}
+.m-txt.attr-header{background:var(--gold-l);border-color:var(--gold-b);color:var(--gold);font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.05em;}
+.m-score-pill{display:inline-block;margin-top:6px;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.06em;padding:3px 10px;border-radius:20px;background:var(--green-l);color:var(--green);border:0.5px solid var(--green-b);}
+
+/* ── RESULTS TABLE ── */
+.results-section{margin-top:1.5rem;}
+.results-title{font-family:'Playfair Display',serif;font-size:18px;font-weight:600;color:var(--text);margin-bottom:1rem;}
+.attr-table{width:100%;border-collapse:collapse;background:var(--bg2);border-radius:10px;overflow:hidden;border:0.5px solid var(--border);}
+.attr-table th{background:var(--text);color:#fff;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.08em;text-transform:uppercase;padding:10px 12px;text-align:left;font-weight:500;}
+.attr-table td{padding:9px 12px;font-size:12px;border-bottom:0.5px solid var(--border);vertical-align:top;}
+.attr-table tr:last-child td{border-bottom:none;}
+.attr-table tr:nth-child(even) td{background:var(--bg3);}
+.attr-name{font-weight:600;color:var(--text);font-size:12px;}
+.attr-weight{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--text3);display:block;margin-top:2px;}
+.response-pill{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:10px;padding:3px 9px;border-radius:20px;font-weight:500;}
+.score-cell{font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:500;text-align:center;}
+.composite-row td{background:var(--gold-l)!important;font-weight:600;}
+.composite-score{font-family:'Playfair Display',serif;font-size:22px;color:var(--gold);text-align:center;}
+
+.response-None,.response-No,.response-Public{background:#f0fdf4;color:#166534;}
+.response-Minor-Impact,.response-Maybe-Dependencies,.response-Private-Internal,.response-Maybe{background:#fefce8;color:#854d0e;}
+.response-Moderate-Impact,.response-Definitely-Few-Dependencies,.response-Confidential{background:#fff7ed;color:#9a3412;}
+.response-Major-Impact,.response-Many-Dependencies,.response-Highly-Confidential,.response-Yes{background:#fef2f2;color:#991b1b;}
+.response-Unknown{background:#f9fafb;color:#6b7280;}
+
+footer{text-align:center;font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--text3);letter-spacing:0.08em;margin-top:2.5rem;padding-top:1.5rem;border-top:0.5px solid var(--border);}
+
+@media(max-width:640px){.team-row{grid-template-columns:repeat(2,1fr);}.family-grid{grid-template-columns:1fr;}h1{font-size:24px;}}
 </style>
 </head>
 <body>
-<div class="paper-bg"></div>
 <div class="wrap">
 
 <header>
-  <div>
-    <p class="eyebrow">DayBlink Consulting — PG&E Engagement</p>
-    <h1>Crown Jewels Council</h1>
-    <p class="hd-sub">Autonomous AI stakeholder debate simulator — asset scoring &amp; certification</p>
+  <div class="hd-top">
+    <div>
+      <p class="eyebrow">DayBlink Consulting — PG&E Engagement</p>
+      <h1>Crown Jewels Scoring Session</h1>
+      <p class="hd-sub">Core team debate simulator — attribute scoring by persona</p>
+    </div>
+    <div class="status-badge" id="statusBadge">Ready</div>
   </div>
-  <div class="live-badge"><span class="live-dot"></span>AI Powered</div>
 </header>
 
-<div class="council-grid">
-  <div class="p-card" id="card-moderator" style="--pc:#4a1a8b;--pb:var(--purple-l);">
-    <div class="p-av" style="background:var(--purple-l);color:var(--purple);">JT</div>
-    <p class="p-name">Jordan Tae</p><p class="p-role">Chief of Staff</p>
-    <p class="p-stat" id="stat-moderator" style="color:var(--purple);"></p>
+<!-- TEAM -->
+<div class="team-row">
+  <div class="persona-card" id="card-priya" style="--pc:#8b6500;--pb:#fdf3d8;">
+    <div class="p-av" style="background:#fdf3d8;color:#8b6500;">PN</div>
+    <p class="p-name">Priya Nair</p>
+    <p class="p-title">VP, Security Programs</p>
+    <p class="p-score" id="score-priya" style="color:#8b6500;"></p>
   </div>
-  <div class="p-card" id="card-ciso" style="--pc:#8b1a1a;--pb:var(--red-l);">
-    <div class="p-av" style="background:var(--red-l);color:var(--red);">YE</div>
-    <p class="p-name">Yusuf Ezzy</p><p class="p-role">CISO</p>
-    <p class="p-stat" id="stat-ciso" style="color:var(--red);"></p>
+  <div class="persona-card" id="card-derek" style="--pc:#13367a;--pb:#eaf0fc;">
+    <div class="p-av" style="background:#eaf0fc;color:#13367a;">DH</div>
+    <p class="p-name">Derek Holt</p>
+    <p class="p-title">Sr. Mgr, Security Gov.</p>
+    <p class="p-score" id="score-derek" style="color:#13367a;"></p>
   </div>
-  <div class="p-card" id="card-cio" style="--pc:#1a3d8b;--pb:var(--blue-l);">
-    <div class="p-av" style="background:var(--blue-l);color:var(--blue);">DC</div>
-    <p class="p-name">David Chen</p><p class="p-role">CIO</p>
-    <p class="p-stat" id="stat-cio" style="color:var(--blue);"></p>
+  <div class="persona-card" id="card-wei" style="--pc:#075c52;--pb:#e0f5f2;">
+    <div class="p-av" style="background:#e0f5f2;color:#075c52;">WC</div>
+    <p class="p-name">Wei Chen</p>
+    <p class="p-title">Mgr, IT Asset Mgmt</p>
+    <p class="p-score" id="score-wei" style="color:#075c52;"></p>
   </div>
-  <div class="p-card" id="card-grc" style="--pc:#1a6b3a;--pb:var(--green-l);">
-    <div class="p-av" style="background:var(--green-l);color:var(--green);">VP</div>
-    <p class="p-name">VP GRC</p><p class="p-role">Governance &amp; Risk</p>
-    <p class="p-stat" id="stat-grc" style="color:var(--green);"></p>
-  </div>
-  <div class="p-card" id="card-cyberops" style="--pc:#8b4a0a;--pb:var(--amber-l);">
-    <div class="p-av" style="background:var(--amber-l);color:var(--amber);">VC</div>
-    <p class="p-name">VP Cyber Ops</p><p class="p-role">Cyber Operations</p>
-    <p class="p-stat" id="stat-cyberops" style="color:var(--amber);"></p>
-  </div>
-  <div class="p-card" id="card-techops" style="--pc:#0a6b6b;--pb:var(--teal-l);">
-    <div class="p-av" style="background:var(--teal-l);color:var(--teal);">HT</div>
-    <p class="p-name">Head Tech Ops</p><p class="p-role">Technology Ops</p>
-    <p class="p-stat" id="stat-techops" style="color:var(--teal);"></p>
-  </div>
-  <div class="p-card" id="card-secarch" style="--pc:#4a1a8b;--pb:var(--purple-l);">
-    <div class="p-av" style="background:var(--purple-l);color:var(--purple);">SA</div>
-    <p class="p-name">VP Sec Arch</p><p class="p-role">Security Architecture</p>
-    <p class="p-stat" id="stat-secarch" style="color:var(--purple);"></p>
+  <div class="persona-card" id="card-sofia" style="--pc:#3d1478;--pb:#f0ebfd;">
+    <div class="p-av" style="background:#f0ebfd;color:#3d1478;">ST</div>
+    <p class="p-name">Sofia Torres</p>
+    <p class="p-title">Sr. Mgr, CMDB & Tooling</p>
+    <p class="p-score" id="score-sofia" style="color:#3d1478;"></p>
   </div>
 </div>
 
-<div class="asset-area">
-  <span class="asset-label">Asset to score</span>
-  <div class="asset-row">
-    <div class="asset-sel-wrap" id="selWrap">
-      <select id="assetSelect">
-        <option value="scada">SCADA Control Systems — Grid Operations</option>
-        <option value="cmdb">ServiceNow CMDB — Configuration Management Database</option>
-        <option value="iam">Identity &amp; Access Management (IAM) Platform</option>
-        <option value="sharepoint">Enterprise SharePoint Intranet</option>
-        <option value="servicedesk">IT Service Desk Portal</option>
-      </select>
-    </div>
-    <div class="custom-wrap" id="customWrap">
-      <textarea id="customAsset" placeholder="Describe the asset: name, type, what data it holds, who owns it, any regulatory flags..."></textarea>
-    </div>
-    <div class="btn-row">
-      <button class="start-btn" id="startBtn" onclick="startDebate()">Start debate</button>
-      <button class="stop-btn" id="stopBtn" onclick="stopDebate()">Stop</button>
-    </div>
+<!-- SELECTOR -->
+<div class="selector-area">
+  <span class="sel-label">Select asset family to score</span>
+  <div class="family-grid" id="familyGrid">
+    <button class="family-btn selected" data-id="1" onclick="selectFamily(this)">
+      <span class="fb-name">Identity &amp; Access Control</span>
+      <span class="fb-count">9 assets</span>
+    </button>
+    <button class="family-btn" data-id="2" onclick="selectFamily(this)">
+      <span class="fb-name">Grid Operations &amp; Energy Management</span>
+      <span class="fb-count">18 assets</span>
+    </button>
+    <button class="family-btn" data-id="3" onclick="selectFamily(this)">
+      <span class="fb-name">Cybersecurity Defense &amp; Monitoring</span>
+      <span class="fb-count">11 assets</span>
+    </button>
+    <button class="family-btn" data-id="4" onclick="selectFamily(this)">
+      <span class="fb-name">Customer Operations &amp; Engagement</span>
+      <span class="fb-count">12 assets</span>
+    </button>
+    <button class="family-btn" data-id="5" onclick="selectFamily(this)">
+      <span class="fb-name">Data &amp; Analytics Platform</span>
+      <span class="fb-count">6 assets</span>
+    </button>
+    <button class="family-btn" data-id="6" onclick="selectFamily(this)">
+      <span class="fb-name">IT Infrastructure &amp; Network</span>
+      <span class="fb-count">20 assets</span>
+    </button>
+    <button class="family-btn" data-id="7" onclick="selectFamily(this)">
+      <span class="fb-name">Finance, Risk &amp; Regulatory</span>
+      <span class="fb-count">13 assets</span>
+    </button>
+    <button class="family-btn" data-id="8" onclick="selectFamily(this)">
+      <span class="fb-name">Software Engineering &amp; DevOps</span>
+      <span class="fb-count">4 assets</span>
+    </button>
+    <button class="family-btn" data-id="9" onclick="selectFamily(this)">
+      <span class="fb-name">Security Governance &amp; Compliance</span>
+      <span class="fb-count">9 assets</span>
+    </button>
+    <button class="family-btn" data-id="10" onclick="selectFamily(this)">
+      <span class="fb-name">Enterprise Productivity &amp; Corporate</span>
+      <span class="fb-count">18 assets</span>
+    </button>
   </div>
-  <button class="toggle-custom" id="toggleCustom" onclick="toggleCustom()">+ Enter a custom asset instead</button>
+  <div class="btn-row">
+    <button class="run-btn" id="runBtn" onclick="startScoring()">Start scoring session</button>
+    <button class="stop-btn" id="stopBtn" onclick="stopScoring()">Stop</button>
+  </div>
 </div>
 
+<!-- PROGRESS -->
 <div class="prog-track"><div class="prog-fill" id="progFill"></div></div>
-
 <div class="phase-pills" id="phasePills">
-  <span class="phase-pill" id="pill-1">1 · Opening scores</span>
-  <span class="phase-pill" id="pill-2">2 · Debate &amp; challenge</span>
-  <span class="phase-pill" id="pill-3">3 · Resolution</span>
-  <span class="phase-pill" id="pill-4">4 · Certification</span>
+  <span class="pill" id="pill-1">1 · Mission Critical Revenue</span>
+  <span class="pill" id="pill-2">2 · Operational Impact</span>
+  <span class="pill" id="pill-3">3 · Regulatory</span>
+  <span class="pill" id="pill-4">4 · Reputation</span>
+  <span class="pill" id="pill-5">5 · Dependencies</span>
+  <span class="pill" id="pill-6">6 · Data Classification</span>
+  <span class="pill" id="pill-7">7 · Business Confidential</span>
+  <span class="pill" id="pill-8">8 · 3rd Party</span>
+  <span class="pill" id="pill-9">9 · PCI Data</span>
+  <span class="pill" id="pill-10">10 · PII Data</span>
 </div>
-
 <div class="stat-row">
-  <span class="stat-txt" id="statTxt">Select an asset and start the debate</span>
+  <span class="stat-txt" id="statTxt">Select a family and start the scoring session</span>
   <span class="stat-txt" id="roundTxt"></span>
 </div>
 
+<!-- DEBATE FEED -->
 <div class="panel">
   <div class="panel-hd">
-    <span class="panel-lbl">Live transcript</span>
-    <span class="panel-lbl" id="roundLbl"></span>
+    <span class="panel-lbl">Live scoring transcript</span>
+    <span class="panel-lbl" id="feedLbl"></span>
   </div>
   <div class="feed" id="feed">
     <div class="empty" id="emptyState">— awaiting session start —</div>
   </div>
 </div>
 
-<div id="verdictArea"></div>
+<!-- RESULTS -->
+<div id="resultsArea"></div>
 
 <footer>PG&amp;E Crown Jewels Assessment &nbsp;·&nbsp; DayBlink Consulting &nbsp;·&nbsp; Confidential &nbsp;·&nbsp; Fictional engagement for internal use only</footer>
 </div>
 
 <script>
 const PERSONAS = {
-  moderator:{name:'Jordan Tae',role:'Chief of Staff',initials:'JT',color:'var(--purple)',bg:'var(--purple-l)',cardId:'card-moderator'},
-  ciso:{name:'Yusuf Ezzy',role:'CISO',initials:'YE',color:'var(--red)',bg:'var(--red-l)',cardId:'card-ciso'},
-  cio:{name:'David Chen',role:'CIO',initials:'DC',color:'var(--blue)',bg:'var(--blue-l)',cardId:'card-cio'},
-  grc:{name:'VP GRC',role:'Governance & Risk',initials:'VP',color:'var(--green)',bg:'var(--green-l)',cardId:'card-grc'},
-  cyberops:{name:'VP Cyber Ops',role:'Cyber Operations',initials:'VC',color:'var(--amber)',bg:'var(--amber-l)',cardId:'card-cyberops'},
-  techops:{name:'Head Tech Ops',role:'Technology Ops',initials:'HT',color:'var(--teal)',bg:'var(--teal-l)',cardId:'card-techops'},
-  secarch:{name:'VP Sec Arch',role:'Security Architecture',initials:'SA',color:'var(--purple)',bg:'var(--purple-l)',cardId:'card-secarch'}
+  priya: {name:'Priya Nair',role:'VP Security Programs',initials:'PN',color:'#8b6500',bg:'#fdf3d8',card:'card-priya',
+    system:`You are Priya Nair, VP of Security Programs & Governance at PG&E. You Approve/Abstain/Challenge asset family scores.
+BIAS: Risk aversion — sensitive to Q3 2025 incident. CISO optics first. You push scores up on security-adjacent assets.
+KNOWLEDGE: High on org context and political dynamics; medium on technical asset detail.
+Respond concisely — 2-3 sentences max. State your chosen response option clearly and explain why.`},
+  derek: {name:'Derek Holt',role:'Sr. Mgr Security Gov.',initials:'DH',color:'#13367a',bg:'#eaf0fc',card:'card-derek',
+    system:`You are Derek Holt, Sr. Manager of Security Governance at PG&E. You Approve/Abstain/Challenge asset family scores.
+BIAS: Catalog bias — trust CMDB over verbal input. Push back on undocumented assertions. Score lower when data is absent.
+KNOWLEDGE: Medium-High on CMDB and asset catalog. Skeptical of scores not traceable to system records.
+Respond concisely — 2-3 sentences max. State your chosen response option clearly and ground it in what CMDB data shows.`},
+  wei: {name:'Wei Chen',role:'Mgr IT Asset Mgmt',initials:'WC',color:'#075c52',bg:'#e0f5f2',card:'card-wei',
+    system:`You are Wei Chen, Manager of IT Asset Management at PG&E. DATA INPUT AND VALIDATION ONLY — not an asset criticality judge.
+BIAS: Familiarity bias — IT infrastructure assets feel more important than application-layer assets.
+KNOWLEDGE: Deep on CMDB structure, field definitions, data gaps. Not an SME on security criticality.
+Respond concisely — 2-3 sentences max. State your chosen response option and note any CMDB data quality issues.`},
+  sofia: {name:'Sofia Torres',role:'Sr. Mgr CMDB & Tooling',initials:'ST',color:'#3d1478',bg:'#f0ebfd',card:'card-sofia',
+    system:`You are Sofia Torres, Sr. Manager of CMDB & Tooling Operations at PG&E. DATA INPUT AND VALIDATION ONLY.
+BIAS: Recency bias — recently modified/flagged assets feel more important. Operational continuity lens.
+KNOWLEDGE: Broad on asset management workflows. NOT deep on security implications.
+Respond concisely — 2-3 sentences max. State your chosen response option from an operational/CMDB perspective.`}
 };
 
-const ASSETS = {
-  scada:{name:'SCADA Control Systems',desc:"Supervisory control systems for PG&E's electrical grid. Direct control of physical infrastructure including substations and switching. Partial air-gap from IT network. NERC CIP BES Cyber System designation."},
-  cmdb:{name:'ServiceNow CMDB',desc:"PG&E's primary IT asset inventory. Contains IP addresses, hostnames, OS versions, network topology maps for all enterprise IT assets. Currently ~18 months stale. Involved in the Q3 2025 breach — attackers used it for network reconnaissance."},
-  iam:{name:'Identity & Access Management Platform',desc:'Enterprise IAM managing authentication and authorization for all IT and OT systems. Controls privileged access. Includes PAM capabilities. SOX IT controls and NERC CIP scope.'},
-  sharepoint:{name:'Enterprise SharePoint Intranet',desc:'Internal collaboration platform. Hosts HR policies, project docs, strategic planning documents, and financial planning materials. Some content in scope of SOX IT review.'},
-  servicedesk:{name:'IT Service Desk Portal',desc:'Employee IT support ticketing system. Contains internal request history, device assignments, user PII (names, contact info, device details). No OT or grid connectivity.'}
+const CRITERIA = [
+  {id:1,name:'Mission Critical Revenue Impact',weight:'20%',options:['None','Minor Impact','Moderate Impact','Major Impact','Unknown']},
+  {id:2,name:'Mission Critical Operational Impact',weight:'17.5%',options:['None','Minor Impact','Moderate Impact','Major Impact','Unknown']},
+  {id:3,name:'Regulatory / Civil Penalties Impact',weight:'12.5%',options:['None','Minor Impact','Moderate Impact','Major Impact','Unknown']},
+  {id:4,name:'Reputation Impact (Consumer / Brand)',weight:'10%',options:['None','Minor Impact','Moderate Impact','Major Impact','Unknown']},
+  {id:5,name:'Resource Dependencies',weight:'12.5%',options:['None','Maybe Dependencies','Definitely Few Dependencies','Many Dependencies']},
+  {id:6,name:'Data Classification Level',weight:'7.5%',options:['Public','Private / Internal','Confidential','Highly Confidential','Unknown']},
+  {id:7,name:'Business Confidential Info',weight:'5%',options:['No','Yes','Maybe']},
+  {id:8,name:'3rd Party Data Dependency',weight:'5%',options:['No','Yes','Maybe']},
+  {id:9,name:'PCI Data',weight:'5%',options:['No','Yes','Maybe']},
+  {id:10,name:'PII Data',weight:'5%',options:['No','Yes','Maybe']}
+];
+
+const SCORE_ATTRS = {
+  'None':0,'No':0,'Public':0,
+  'Minor Impact':0.375,'Maybe Dependencies':0.375,'Private / Internal':0.375,'Maybe':0.5,
+  'Moderate Impact':0.625,'Definitely Few Dependencies':0.625,'Confidential':0.625,
+  'Major Impact':1.0,'Many Dependencies':1.0,'Highly Confidential':1.0,'Yes':1.0,
+  'Unknown':0.375
 };
 
-const SYSTEM_CONTEXT = `You are simulating a PG&E Crown Jewels Council scoring session. The council has 6 members:
+const WEIGHTS = {1:0.20,2:0.175,3:0.125,4:0.10,5:0.125,6:0.075,7:0.05,8:0.05,9:0.05,10:0.05};
 
-- Yusuf Ezzy (CISO): Direct, weights confidentiality/lateral movement risk. The Q3 2025 breach (47-day dwell) happened on his watch — he takes security risk personally. Pushes back on weak justifications.
-- David Chen (CIO): Strategic, budget-conscious. Weights availability and business continuity. Pushes back on CJ designations without clear business justification.
-- VP GRC: Methodical, compliance-driven. Weights regulatory exposure — NERC CIP, CPUC, SOX. PG&E's 2020 $2.7M NERC fine weighs on them. Pushes for auditable rationale.
-- VP Cyber Ops: Earnest, new to role post-incident. Weights detectability and attack surface. Flags monitoring gaps honestly. Leans conservative when uncertain.
-- Head Tech Ops: Pragmatic, slightly territorial. Owns the CMDB (18 months stale). Has audit scar tissue. Pushes back on security-driven classifications that ignore operational reality.
-- VP Sec Arch: Technical, precise. Thinks in attack paths and architecture dependencies. Surfaces risks others miss.
+const FAMILIES = {
+  1:{name:'Identity & Access Control',count:9,desc:'Controls authentication, authorization, and privileged access across all PGE IT/OT environments. Includes Active Directory/Entra ID, CyberArk PAM, Okta SSO/MFA, PKI/cert authority, HashiCorp Vault. Q3 2025 incident root-caused to IAM gaps.'},
+  2:{name:'Grid Operations & Energy Management',count:18,desc:'IT-side systems supporting grid operations: EMS, OATI Weblink (CAISO dispatch), SCADA Historian (IT data layer only), AMI/smart grid data systems, wildfire monitoring. Phase 1 IT-side only — actual OT control systems not in scope. Physical grid has manual fallback procedures.'},
+  3:{name:'Cybersecurity Defense & Monitoring',count:11,desc:'Detection and response: SIEM (IBM QRadar), EDR, SOC orchestration, NDR, vulnerability management. Company has defense-in-depth in place mitigating impact of any single compromised cybersecurity resource.'},
+  4:{name:'Customer Operations & Engagement',count:12,desc:'Manages 5M+ customer accounts: CIS/CRM, Oracle CC&B billing, payment processing, customer analytics. Highest PCI/PII concentration. Oracle CC&B has documented failover — 24hr outage means delayed billing, not lost revenue. CPUC notification obligations apply.'},
+  5:{name:'Data & Analytics Platform',count:6,desc:'Data movement and intelligence: data lake, warehouse, BI tooling, API management. High 3rd-party dependency. CMDB coverage gaps most pronounced here. Supports decision-making but does not directly control operations.'},
+  6:{name:'IT Infrastructure & Network',count:20,desc:'Foundational infrastructure: core network DNS/BGP, ServiceNow CMDB (18 months stale, Q3 2025 breach involved), Palo Alto NGFW, Azure Cloud, VMware vSphere, BCP/DR systems. CMDB staleness is a known risk.'},
+  7:{name:'Finance, Risk & Regulatory',count:13,desc:'CPUC/FERC/NERC CIP compliance concentration: SAP ERP, GRC tools, treasury systems. SOX audit trails live here. Operational impact limited to finance/compliance workflows — not grid or customer operations.'},
+  8:{name:'Software Engineering & DevOps',count:4,desc:'Software development pipeline: CI/CD, source code management, project tracking. Supply chain attack vector — compromised CI/CD enables injection across deployed applications. Limited direct operational impact.'},
+  9:{name:'Security Governance & Compliance',count:9,desc:'Policy enforcement and oversight: DLP, cloud security posture, physical security, TPRM, security awareness training. Primarily detective/preventive controls — not operational systems.'},
+  10:{name:'Enterprise Productivity & Corporate Systems',count:18,desc:'Back-office: M&A VDR, board communications (Diligent), SharePoint, HR platforms, facilities. Contains M&A IP and executive PII but no direct operational or grid impact. Lowest operational criticality family.'}
+};
 
-Jordan Tae (Chief of Staff to CISO) facilitates.
+const GLOBAL_CONTEXT = `GLOBAL SCORING ASSUMPTIONS:
+1. Compromise = any malicious/accidental activity affecting CIA, outage, or degraded condition.
+2. Impact duration: 24-hour rectification assumed. Score as if the outage lasts 24 hours, not permanently.
+3. Direct compromise only — no daisy chain/upstream effects.
+4. Regulated Data Flag: If PII or PCI = Yes/Maybe → Regulatory minimum = Minor Impact.
+5. PHI excluded from MVP.
+6. Regulatory scenario: PGE's own fault, not 3rd party.
+7. Reputational Flag: If Revenue = Major Impact → Reputation minimum = Minor Impact.
+8. Bottom-up: score at system/component level, not product/brand level.
+9. PGE revenue = regulated utility tariff. Most IT systems have no direct revenue impact.`;
 
-Scoring tiers: Crown Jewel (avg 4.5+), High (3.5-4.4), Moderate (2.5-3.4), Low (below 2.5)
-Score each dimension 1-5: Confidentiality, Integrity, Availability, Business Impact, Regulatory Exposure`;
-
+let selectedFamily = 1;
 let aborted = false;
-let isRunning = false;
+let running = false;
+let consensusScores = {};
+
+function selectFamily(btn) {
+  document.querySelectorAll('.family-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  selectedFamily = parseInt(btn.dataset.id);
+}
 
 function setProgress(p){document.getElementById('progFill').style.width=p+'%';}
 function setStatus(t){document.getElementById('statTxt').textContent=t;}
-function setRound(t){document.getElementById('roundTxt').textContent=t;document.getElementById('roundLbl').textContent=t;}
+function setRound(t){document.getElementById('roundTxt').textContent=t;document.getElementById('feedLbl').textContent=t;}
 
 function setPhase(n){
-  for(let i=1;i<=4;i++){
+  for(let i=1;i<=10;i++){
     const el=document.getElementById('pill-'+i);
-    if(i<n)el.className='phase-pill done';
-    else if(i===n)el.className='phase-pill active';
-    else el.className='phase-pill';
+    if(i<n)el.className='pill done';
+    else if(i===n)el.className='pill active';
+    else el.className='pill';
   }
 }
 
-function setSpeaking(ids){
+function setActive(id){
   Object.keys(PERSONAS).forEach(k=>{
-    const el=document.getElementById(PERSONAS[k].cardId);
-    if(el)el.classList.toggle('speaking',ids.includes(k));
+    document.getElementById(PERSONAS[k].card).classList.toggle('active',k===id);
   });
 }
 
-function setPersonaStat(id,txt){
-  const el=document.getElementById('stat-'+id);
-  if(el)el.textContent=txt;
+function setPersonaScore(id,text){
+  const el=document.getElementById('score-'+id);
+  if(el)el.textContent=text;
 }
 
-function addMsg(speakerId,text,extraClass=''){
+function addMsg(personaId, text, extraClass=''){
   const feed=document.getElementById('feed');
   const empty=document.getElementById('emptyState');
   if(empty)empty.remove();
-  const p=PERSONAS[speakerId];
+  const p=PERSONAS[personaId];
   const now=new Date().toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'});
   const div=document.createElement('div');
   div.className='msg';
-  div.innerHTML='<div class="m-av" style="background:'+p.bg+';color:'+p.color+';">'+p.initials+'</div><div class="m-body"><div class="m-hd"><span class="m-name">'+p.name+'</span><span class="m-role">'+p.role+'</span><span class="m-time">'+now+'</span></div><p class="m-txt '+extraClass+'">'+renderMd(text)+'</p></div>';
+  div.innerHTML=`<div class="m-av" style="background:${p.bg};color:${p.color};">${p.initials}</div>
+    <div class="m-body">
+      <div class="m-hd"><span class="m-name">${p.name}</span><span class="m-role">${p.role}</span><span class="m-time">${now}</span></div>
+      <p class="m-txt ${extraClass}">${text}</p>
+    </div>`;
   feed.appendChild(div);
   feed.scrollTop=feed.scrollHeight;
 }
 
-function addPhaseHeader(text){
+function addAttrHeader(criterionName, attrNum){
   const feed=document.getElementById('feed');
   const empty=document.getElementById('emptyState');
   if(empty)empty.remove();
   const div=document.createElement('div');
   div.className='msg';
-  div.innerHTML='<div class="m-av" style="background:var(--gold-l);color:var(--gold);">—</div><div class="m-body"><div class="m-hd"></div><p class="m-txt phase-header">'+text+'</p></div>';
+  div.innerHTML=`<div class="m-av" style="background:#f0ede5;color:#9c9590;">—</div>
+    <div class="m-body"><div class="m-hd"></div>
+    <p class="m-txt attr-header">Attribute ${attrNum} of 10 — ${criterionName}</p></div>`;
   feed.appendChild(div);
   feed.scrollTop=feed.scrollHeight;
 }
 
-function renderMd(text){
-  if(!text)return '';
-  var parts=text.split('**');
-  var out='';
-  for(var i=0;i<parts.length;i++){
-    out+= i%2===1 ? '<strong>'+parts[i]+'</strong>' : parts[i];
-  }
-  out=out.replace(/\n\n/g,'<br><br>').replace(/\n/g,'<br>');
-  return out;
-}
-
-async function callAPI(systemPrompt, userPrompt, maxTokens){
+async function callAPI(systemPrompt, userPrompt){
   const resp = await fetch('/.netlify/functions/debate',{
     method:'POST',
     headers:{'Content-Type':'application/json'},
     body:JSON.stringify({
+      model:'claude-sonnet-4-6',
+      max_tokens:300,
       system: systemPrompt,
-      messages:[{role:'user',content:userPrompt}],
-      max_tokens: maxTokens
+      messages:[{role:'user',content:userPrompt}]
     })
   });
   if(!resp.ok){
@@ -319,245 +405,210 @@ async function callAPI(systemPrompt, userPrompt, maxTokens){
   return data.content[0].text;
 }
 
-function parseScores(text){
-  var nums=text.match(/\d+/g);
-  if(nums&&nums.length>=5)return nums.slice(0,5).map(Number);
-  return [3,3,3,3,3];
-}
-
-function parseTier(text){
-  if(/crown jewel/i.test(text))return 'Crown Jewel';
-  if(/\bhigh\b/i.test(text))return 'High';
-  if(/\bmoderate\b/i.test(text))return 'Moderate';
-  return 'Low';
-}
-
-function showVerdict(assetName,assetDesc,tier,scores,keyPoints){
-  var tMap={'Crown Jewel':{c:'var(--gold)',bg:'var(--gold-l)',b:'var(--gold-b)',icon:'👑'},'High':{c:'var(--red)',bg:'var(--red-l)',b:'var(--red-b)',icon:'⚠'},'Moderate':{c:'var(--blue)',bg:'var(--blue-l)',b:'var(--blue-b)',icon:'●'},'Low':{c:'var(--text3)',bg:'var(--bg3)',b:'var(--border)',icon:'○'}};
-  var t=tMap[tier]||tMap['Moderate'];
-  var dims=['Confidentiality','Integrity','Availability','Business Impact','Regulatory'];
-  var scoreCells=dims.map(function(k,i){return '<div class="sc"><p class="sc-d">'+k+'</p><p class="sc-n" style="color:'+t.c+';">'+(scores[i]||'-')+'<span class="sc-den">/5</span></p></div>';}).join('');
-  var pts=(keyPoints||[]).map(function(p){return '<div class="key-pt">'+p+'</div>';}).join('');
-  var members=['Yusuf Ezzy','David Chen','VP GRC','VP Cyber Ops','Head Tech Ops','VP Sec Arch'];
-  var pills=members.map(function(n){return '<span class="cert-pill">'+n+'</span>';}).join('');
-  document.getElementById('verdictArea').innerHTML='<div class="verdict" style="border:1px solid '+t.b+';"><p class="v-ey" style="color:'+t.c+';">'+t.icon+' Council verdict — certified</p><p class="v-name">'+assetName+'</p><p class="v-desc">'+assetDesc+'</p><div class="v-tier" style="background:'+t.bg+';border:0.5px solid '+t.b+';"><span class="v-tier-lbl">Final designation</span><span class="v-tier-val" style="color:'+t.c+';">'+t.icon+' '+tier+'</span></div><div class="scores">'+scoreCells+'</div><div class="key-pts"><p class="key-pts-lbl">Key debate points</p>'+pts+'</div><div class="v-cert"><span class="v-cert-lbl">Certified by</span>'+pills+'</div></div>';
-}
-
-function toggleCustom(){
-  var wrap=document.getElementById('customWrap');
-  var selWrap=document.getElementById('selWrap');
-  var btn=document.getElementById('toggleCustom');
-  var showing=wrap.classList.contains('show');
-  if(showing){wrap.classList.remove('show');selWrap.style.display='';btn.textContent='+ Enter a custom asset instead';}
-  else{wrap.classList.add('show');selWrap.style.display='none';btn.textContent='− Use preset asset instead';}
-}
-
-function stopDebate(){
-  aborted=true;isRunning=false;
-  setSpeaking([]);setStatus('Debate stopped.');
-  document.getElementById('stopBtn').style.display='none';
-  document.getElementById('startBtn').disabled=false;
-  document.getElementById('startBtn').textContent='Start debate';
-}
-
-async function startDebate(){
-  if(isRunning)return;
-  isRunning=true;aborted=false;
-
-  var isCustom=document.getElementById('customWrap').classList.contains('show');
-  var assetName,assetDesc;
-  if(isCustom){
-    var custom=document.getElementById('customAsset').value.trim();
-    if(!custom){setStatus('Please describe your custom asset.');isRunning=false;return;}
-    assetName='Custom Asset';assetDesc=custom;
-  } else {
-    var key=document.getElementById('assetSelect').value;
-    var a=ASSETS[key];assetName=a.name;assetDesc=a.desc;
+function extractOption(text, options){
+  // Find which response option the persona chose
+  for(const opt of options){
+    if(text.toLowerCase().includes(opt.toLowerCase()))return opt;
   }
+  return options[0]; // fallback to first option
+}
 
-  document.getElementById('startBtn').disabled=true;
-  document.getElementById('startBtn').textContent='Debate in progress...';
+function calculateComposite(scores){
+  let total=0;
+  CRITERIA.forEach(c=>{
+    const resp=scores[c.id];
+    if(resp){
+      const attr=SCORE_ATTRS[resp]||0;
+      total+=WEIGHTS[c.id]*attr*100;
+    }
+  });
+  return Math.round(total*100)/100;
+}
+
+function stopScoring(){
+  aborted=true;running=false;
+  setActive(null);
+  setStatus('Session stopped.');
+  document.getElementById('stopBtn').style.display='none';
+  document.getElementById('runBtn').disabled=false;
+  document.getElementById('runBtn').textContent='Start scoring session';
+  const badge=document.getElementById('statusBadge');
+  badge.className='status-badge';badge.textContent='Stopped';
+}
+
+async function startScoring(){
+  if(running)return;
+  running=true;aborted=false;
+  consensusScores={};
+
+  const family=FAMILIES[selectedFamily];
+  document.getElementById('runBtn').disabled=true;
+  document.getElementById('runBtn').textContent='Session in progress...';
   document.getElementById('stopBtn').style.display='';
-  document.getElementById('verdictArea').innerHTML='';
-  document.getElementById('feed').innerHTML='<div class="empty" id="emptyState">— initializing council session —</div>';
-  Object.keys(PERSONAS).forEach(function(k){setPersonaStat(k,'');document.getElementById(PERSONAS[k].cardId).classList.remove('speaking');});
-  setProgress(0);setPhase(0);setStatus('Starting debate...');setRound('');
+  document.getElementById('resultsArea').innerHTML='';
+  document.getElementById('feed').innerHTML='<div class="empty" id="emptyState">— initializing session —</div>';
 
-  var assetInfo='ASSET: '+assetName+'\n'+assetDesc;
+  Object.keys(PERSONAS).forEach(k=>{setPersonaScore(k,'');document.getElementById(PERSONAS[k].card).classList.remove('active');});
+  setProgress(0);setPhase(0);
+  setStatus(`Scoring: ${family.name}`);setRound('');
+
+  const badge=document.getElementById('statusBadge');
+  badge.className='status-badge running';
+  badge.innerHTML='<span class="dot"></span>Scoring in progress';
 
   try {
+    const personaIds=Object.keys(PERSONAS);
+    const attrScoresByPersona={};
+    personaIds.forEach(id=>{attrScoresByPersona[id]={};});
 
-    // ── PHASE 1: Opening scores ───────────────────────────────
-    if(aborted)throw new Error('stopped');
-    setPhase(1);setProgress(10);
-    setStatus('Council members presenting initial scores...');
-    setSpeaking(['ciso','cio','grc','cyberops','techops','secarch']);
-    addPhaseHeader('Phase 1 — Opening scores');
+    for(let ci=0;ci<CRITERIA.length;ci++){
+      if(aborted)break;
+      const criterion=CRITERIA[ci];
+      setPhase(ci+1);
+      setProgress(Math.round(((ci)/CRITERIA.length)*90));
+      setRound(`Attribute ${ci+1} of 10`);
 
-    var phase1 = await callAPI(
-      SYSTEM_CONTEXT,
-      assetInfo+'\n\nPhase 1: Each of the 6 council members should now present their initial scores across all 5 dimensions with brief reasoning. Format each response as:\n\n[NAME] (Role):\nScores: C:[X] I:[X] A:[X] BI:[X] R:[X]\n[2-3 sentence reasoning]\n\nBe realistic — not every asset is a Crown Jewel. Let personalities show through. Include some disagreement.',
-      900
-    );
-    if(aborted)throw new Error('stopped');
+      addAttrHeader(criterion.name, ci+1);
 
-    // Parse and display each member's opening
-    var members=['Yusuf Ezzy','David Chen','VP GRC','VP Cyber Ops','Head Tech Ops','VP Sec Arch'];
-    var memberIds=['ciso','cio','grc','cyberops','techops','secarch'];
-    var sections=phase1.split(/\n(?=[A-Z])/);
-    if(sections.length<3){
-      // fallback: show as single moderator summary
-      addMsg('moderator', phase1);
-    } else {
-      sections.forEach(function(section,i){
-        if(!section.trim())return;
-        var matchedId='moderator';
-        memberIds.forEach(function(id,j){
-          if(section.toLowerCase().includes(members[j].toLowerCase().split(' ')[0])||
-             section.toLowerCase().includes(PERSONAS[id].role.toLowerCase().split(' ')[0])){
-            matchedId=id;
-          }
-        });
-        setTimeout(function(){addMsg(matchedId,section.trim());},i*400);
-      });
+      // Each persona scores this attribute
+      const attrResponses=[];
+      for(const personaId of personaIds){
+        if(aborted)break;
+        const persona=PERSONAS[personaId];
+        setActive(personaId);
+        setStatus(`${persona.name} scoring ${criterion.name}...`);
+
+        const prompt=`${GLOBAL_CONTEXT}
+
+ASSET FAMILY: ${family.name} (${family.count} assets)
+${family.desc}
+
+YOU ARE SCORING: ${criterion.name} (Weight: ${criterion.weight})
+Valid response options: ${criterion.options.join(', ')}
+
+Other team members have scored: ${attrResponses.length > 0 ? attrResponses.map(r=>`${r.name}: ${r.choice}`).join(', ') : 'You are scoring first.'}
+
+State your response option choice for this attribute and explain your reasoning in 2-3 sentences.
+Be specific to this family and this attribute. Reference your role and knowledge.
+Start your response by clearly stating your chosen option.`;
+
+        try {
+          const response = await callAPI(persona.system, prompt);
+          const choice = extractOption(response, criterion.options);
+          attrScoresByPersona[personaId][criterion.id] = choice;
+          attrResponses.push({name:persona.name, choice});
+
+          // Show message with score pill
+          const msgDiv=document.createElement('div');
+          msgDiv.className='msg';
+          const feed=document.getElementById('feed');
+          const empty=document.getElementById('emptyState');
+          if(empty)empty.remove();
+          const now=new Date().toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'});
+          const pillClass='response-'+choice.replace(/ \/ /g,'-').replace(/ /g,'-').replace(/[()]/g,'');
+          msgDiv.innerHTML=`<div class="m-av" style="background:${persona.bg};color:${persona.color};">${persona.initials}</div>
+            <div class="m-body">
+              <div class="m-hd"><span class="m-name">${persona.name}</span><span class="m-role">${persona.role}</span><span class="m-time">${now}</span></div>
+              <p class="m-txt">${response}<span class="m-score-pill ${pillClass}">${choice}</span></p>
+            </div>`;
+          feed.appendChild(msgDiv);
+          feed.scrollTop=feed.scrollHeight;
+
+        } catch(e){
+          addMsg(personaId, `[Error: ${e.message}]`);
+        }
+
+        await new Promise(r=>setTimeout(r,400));
+      }
+
+      // Consensus = most common response
+      if(attrResponses.length>0){
+        const counts={};
+        attrResponses.forEach(r=>{counts[r.choice]=(counts[r.choice]||0)+1;});
+        consensusScores[criterion.id]=Object.keys(counts).reduce((a,b)=>counts[a]>counts[b]?a:b);
+      }
     }
 
-    await new Promise(function(r){setTimeout(r,sections.length*400+500);});
-    if(aborted)throw new Error('stopped');
-    setProgress(30);
-    Object.keys(PERSONAS).forEach(function(k){setPersonaStat(k,'');});
+    if(!aborted){
+      setProgress(100);setPhase(11);
+      setActive(null);
+      setStatus('Session complete — generating results...');
 
-    // ── PHASE 2: Debate & challenge ───────────────────────────
-    setPhase(2);setProgress(40);
-    setStatus('Stakeholders debating disagreements...');
-    setSpeaking(['ciso','cio','techops']);
-    addPhaseHeader('Phase 2 — Debate & challenge');
-
-    var phase2 = await callAPI(
-      SYSTEM_CONTEXT,
-      assetInfo+'\n\nPhase 1 scores are in. Phase 2: The council should now debate the key disagreements. Pick the 2-3 most interesting tensions from the opening scores and have the relevant members argue their positions. At least one person should push back on another\'s score with a specific counter-argument. Show real personality — the Head of Tech Ops should be defensive, the CIO should demand business justification, the CISO should reference the Q3 breach if relevant. Format as natural dialogue with speaker names.',
-      800
-    );
-    if(aborted)throw new Error('stopped');
-
-    var debateLines=phase2.split('\n').filter(function(l){return l.trim();});
-    var debateDelay=0;
-    debateLines.forEach(function(line){
-      if(!line.trim())return;
-      var speakerId='moderator';
-      memberIds.forEach(function(id,j){
-        if(line.toLowerCase().includes(members[j].toLowerCase().split(' ')[0])||
-           line.toLowerCase().includes(PERSONAS[id].name.toLowerCase().split(' ')[0])){
-          speakerId=id;
-        }
+      // Calculate composite per persona and average
+      const personaComposites={};
+      personaIds.forEach(id=>{
+        const comp=calculateComposite(attrScoresByPersona[id]);
+        personaComposites[id]=comp;
+        setPersonaScore(id,comp.toFixed(1));
       });
-      setTimeout(function(){addMsg(speakerId,line.replace(/^[^:]+:\s*/,'').trim());},debateDelay);
-      debateDelay+=350;
-    });
 
-    await new Promise(function(r){setTimeout(r,debateDelay+500);});
-    if(aborted)throw new Error('stopped');
-    setProgress(60);
+      const avgComposite=Object.values(personaComposites).reduce((a,b)=>a+b,0)/personaIds.length;
+      const consensusComposite=calculateComposite(consensusScores);
 
-    // ── PHASE 3: Resolution ────────────────────────────────────
-    setPhase(3);setProgress(65);
-    setStatus('Resolving disagreements...');
-    setSpeaking(['moderator','ciso','cio']);
-    addPhaseHeader('Phase 3 — Resolution');
-
-    var phase3 = await callAPI(
-      SYSTEM_CONTEXT,
-      assetInfo+'\n\nPhase 3: Jordan Tae now pushes the group toward resolution. Key disagreements need to be explicitly resolved — someone needs to move their position or convince others. End this phase with a provisional consensus on the final tier and documented rationale. Jordan Tae should summarize the agreed rationale in 2-3 sentences.',
-      600
-    );
-    if(aborted)throw new Error('stopped');
-
-    var resolLines=phase3.split('\n').filter(function(l){return l.trim();});
-    var resolDelay=0;
-    resolLines.forEach(function(line){
-      if(!line.trim())return;
-      var speakerId='moderator';
-      if(line.toLowerCase().includes('yusuf')||line.toLowerCase().includes('ciso'))speakerId='ciso';
-      else if(line.toLowerCase().includes('david')||line.toLowerCase().includes('cio'))speakerId='cio';
-      else if(line.toLowerCase().includes('grc'))speakerId='grc';
-      else if(line.toLowerCase().includes('cyber ops')||line.toLowerCase().includes('cyberops'))speakerId='cyberops';
-      else if(line.toLowerCase().includes('tech ops')||line.toLowerCase().includes('techops'))speakerId='techops';
-      else if(line.toLowerCase().includes('sec arch')||line.toLowerCase().includes('security arch'))speakerId='secarch';
-      setTimeout(function(){addMsg(speakerId,line.replace(/^[^:]+:\s*/,'').trim());},resolDelay);
-      resolDelay+=350;
-    });
-
-    await new Promise(function(r){setTimeout(r,resolDelay+500);});
-    if(aborted)throw new Error('stopped');
-    setProgress(80);
-
-    // ── PHASE 4: Certification & verdict ──────────────────────
-    setPhase(4);setProgress(85);
-    setStatus('Collecting certifications...');
-    setSpeaking(['ciso','cio','grc','cyberops','techops','secarch']);
-    addPhaseHeader('Phase 4 — Certification');
-
-    var phase4 = await callAPI(
-      SYSTEM_CONTEXT,
-      assetInfo+'\n\nPhase 4: Each of the 6 council members now formally certifies the classification. Each should say "I can certify this classification" and optionally note one condition or caveat. Then provide a final structured verdict:\n\nFINAL TIER: [Crown Jewel / High / Moderate / Low]\nCONSENSUS SCORES: C:[X] I:[X] A:[X] BI:[X] R:[X]\nKEY POINTS:\n- [point 1]\n- [point 2]\n- [point 3]',
-      700
-    );
-    if(aborted)throw new Error('stopped');
-
-    // Show certifications
-    var certLines=phase4.split('\n').filter(function(l){return l.trim();});
-    var certDelay=0;
-    certLines.forEach(function(line){
-      if(!line.trim())return;
-      if(line.includes('FINAL TIER')||line.includes('CONSENSUS')||line.includes('KEY POINTS')||line.startsWith('-'))return;
-      var speakerId='moderator';
-      memberIds.forEach(function(id,j){
-        if(line.toLowerCase().includes(members[j].toLowerCase().split(' ')[0])||
-           line.toLowerCase().includes(PERSONAS[id].name.toLowerCase().split(' ')[0])){
-          speakerId=id;
-        }
-      });
-      var isCert=line.toLowerCase().includes('certify');
-      setTimeout(function(){
-        addMsg(speakerId,line.replace(/^[^:]+:\s*/,'').trim(),isCert?'certified':'');
-        if(isCert)setPersonaStat(speakerId,'✓ Certified');
-      },certDelay);
-      certDelay+=400;
-    });
-
-    await new Promise(function(r){setTimeout(r,certDelay+500);});
-    if(aborted)throw new Error('stopped');
-
-    // Parse verdict
-    var tier=parseTier(phase4);
-    var scoreMatch=phase4.match(/C:(\d)\s*I:(\d)\s*A:(\d)\s*BI:(\d)\s*R:(\d)/);
-    var scores=scoreMatch?[1,2,3,4,5].map(function(i){return parseInt(scoreMatch[i]);}): [4,4,4,4,4];
-    var keyPoints=[];
-    var kpMatch=phase4.match(/KEY POINTS:([\s\S]*?)(?:\n\n|$)/);
-    if(kpMatch){
-      keyPoints=kpMatch[1].split('\n').filter(function(l){return l.trim().startsWith('-');}).map(function(l){return l.replace(/^-\s*/,'').trim();});
+      showResults(family, attrScoresByPersona, personaComposites, consensusScores, consensusComposite);
+      setRound(`Avg score: ${avgComposite.toFixed(1)} | Consensus: ${consensusComposite.toFixed(1)}`);
+      badge.className='status-badge';badge.textContent='Complete';
     }
-
-    setSpeaking([]);
-    setProgress(100);
-    setPhase(5);
-    setStatus('Session complete — '+assetName+' designated '+tier);
-    setRound('4 phases · ~4 API calls');
-    showVerdict(assetName,assetDesc,tier,scores,keyPoints);
-    Object.keys(PERSONAS).forEach(function(k){if(k!=='moderator')setPersonaStat(k,'✓ Certified');});
 
   } catch(e){
-    if(e.message!=='stopped'){
-      setStatus('Error: '+e.message);
-      console.error(e);
-    }
+    setStatus('Error: '+e.message);
+    badge.className='status-badge';badge.textContent='Error';
   }
 
-  setSpeaking([]);
-  isRunning=false;
+  setActive(null);
+  running=false;
   document.getElementById('stopBtn').style.display='none';
-  document.getElementById('startBtn').disabled=false;
-  document.getElementById('startBtn').textContent='Score another asset';
+  document.getElementById('runBtn').disabled=false;
+  document.getElementById('runBtn').textContent='Score another family';
+}
+
+function showResults(family, attrScoresByPersona, personaComposites, consensus, consensusComposite){
+  const personaIds=Object.keys(PERSONAS);
+  const area=document.getElementById('resultsArea');
+
+  let tableHTML=`
+  <div class="results-section">
+    <p class="results-title">${family.name} — Scoring Results</p>
+    <table class="attr-table">
+      <thead>
+        <tr>
+          <th style="width:200px;">Attribute</th>
+          <th>Priya Nair</th>
+          <th>Derek Holt</th>
+          <th>Wei Chen</th>
+          <th>Sofia Torres</th>
+          <th>Consensus</th>
+        </tr>
+      </thead>
+      <tbody>`;
+
+  CRITERIA.forEach(c=>{
+    tableHTML+=`<tr>
+      <td><span class="attr-name">${c.name}</span><span class="attr-weight">${c.weight}</span></td>`;
+
+    personaIds.forEach(id=>{
+      const resp=attrScoresByPersona[id][c.id]||'—';
+      const pillClass='response-'+resp.replace(/ \/ /g,'-').replace(/ /g,'-').replace(/[()]/g,'');
+      tableHTML+=`<td><span class="response-pill ${pillClass}">${resp}</span></td>`;
+    });
+
+    const cons=consensus[c.id]||'—';
+    const consPill='response-'+cons.replace(/ \/ /g,'-').replace(/ /g,'-').replace(/[()]/g,'');
+    tableHTML+=`<td><span class="response-pill ${consPill}">${cons}</span></td></tr>`;
+  });
+
+  tableHTML+=`<tr class="composite-row">
+    <td><span class="attr-name">Composite Score</span><span class="attr-weight">Weighted total</span></td>`;
+
+  personaIds.forEach(id=>{
+    tableHTML+=`<td class="score-cell">${(personaComposites[id]||0).toFixed(1)}</td>`;
+  });
+
+  tableHTML+=`<td class="composite-score">${consensusComposite.toFixed(1)}</td>
+    </tr></tbody></table></div>`;
+
+  area.innerHTML=tableHTML;
+  area.scrollIntoView({behavior:'smooth',block:'start'});
 }
 </script>
 </body>
