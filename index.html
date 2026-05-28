@@ -567,13 +567,19 @@ ASSET FAMILY: ${family.name} (${family.count} assets)
 ${family.desc}
 
 YOU ARE SCORING: ${criterion.name} (Weight: ${criterion.weight})
-Valid response options: ${criterion.options.join(', ')}
+Definition: ${criterion.name === 'Mission Critical Revenue Impact' ? 'Level of direct impact on PGE regulated utility revenue if this family is compromised. Note: most IT systems have no direct revenue impact — only grid delivery and billing systems do.' :
+criterion.name === 'Mission Critical Operational Impact' ? 'Level of impact on critical operations if this family is compromised. Assume 24-hour rectification window.' :
+criterion.name === 'Regulatory / Civil Penalties Impact' ? 'Level of regulatory/civil penalty exposure if compromised (PGE fault). NERC CIP, CPUC, SOX.' :
+criterion.name === 'Reputation Impact (Consumer / Brand)' ? 'Level of reputational impact if compromised. Consider consumer and brand perception.' :
+criterion.name === 'Resource Dependencies' ? 'How many primary dependencies and direct integrations does this family have with other resources?' :
+criterion.name === 'Data Classification Level' ? 'What is the highest data classification level hosted within this family?' :
+'Does this family contain this type of data or dependency?'}
 
-Other team members have scored: ${attrResponses.length > 0 ? attrResponses.map(r=>`${r.name}: ${r.choice}`).join(', ') : 'You are scoring first.'}
+Valid response options: ${criterion.options.join(' | ')}
 
-State your response option choice for this attribute and explain your reasoning in 2-3 sentences.
-Be specific to this family and this attribute. Reference your role and knowledge.
-Start your response by clearly stating your chosen option.`;
+Score independently based on your own knowledge and role. Do not assume what others would score.
+State your chosen option in the first sentence, then explain your specific reasoning in 1-2 more sentences.
+Be honest — if the evidence does not support a high score, say so.`;
 
         try {
           const response = await callAPI(persona.system, prompt);
